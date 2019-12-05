@@ -1,0 +1,11 @@
+{
+  "name": "rsvp",
+  "version": "1.0.0",
+  "author": "David <david_andika17123@hotmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "firebase serve",
+    "start:functions": "firebase serve --only functions",
+    "start:hosting": "firebase serve --only hosting"
+  }
+}
