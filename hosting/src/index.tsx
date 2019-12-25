@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import Routes from './Routes'
+import App from './App'
 
 const getMountPoint = (id: string = 'root'): HTMLElement => {
   let rootEl = document.getElementById(id)
@@ -13,9 +13,4 @@ const getMountPoint = (id: string = 'root'): HTMLElement => {
   return rootEl
 }
 
-ReactDOM.render(
-  (
-    <Routes />
-  ),
-  getMountPoint('root'),
-)
+ReactDOM.render(<App />, getMountPoint('root'))
