@@ -29,18 +29,18 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function AdminLogin() {
-  const classes = useStyles();
+  const classes = useStyles()
   const [loading, setLoading] = React.useState<boolean>(false)
   const [error, setError] = React.useState<{[key: string]: any}>({})
   const [email, setEmail] = React.useState<string>('')
   const [password, setPassword] = React.useState<string>('')
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    setLoading(true);
-    setError({});
-    const res = await login(email, password);
+    setLoading(true)
+    setError({})
+    const res = await login(email, password)
     if (res === Login.Error.INVALID_EMAIL) {
       setError({
         email: 'Invalid email',
@@ -58,7 +58,7 @@ export default function AdminLogin() {
         password: 'Invalid password',
       })
     }
-    setLoading(false);
+    setLoading(false)
   };
 
   return (
