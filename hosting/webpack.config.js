@@ -1,6 +1,7 @@
 const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const DotenvWebpack = require('dotenv-webpack');
 
 const webpackConfig = (env = {}) => {
   const isProduction = !!env.production
@@ -32,6 +33,7 @@ const webpackConfig = (env = {}) => {
           viewport: 'minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no',
         },
       }),
+      new DotenvWebpack(),
     ],
   }
 
