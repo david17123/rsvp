@@ -1,4 +1,10 @@
 import firebase from 'firebase'
+import React, { FunctionComponent } from 'react'
+import { Redirect } from 'react-router-dom'
+
+import CircularProgress from '@material-ui/core/CircularProgress'
+
+import { UserContext } from './UserContext'
 
 export const login = (email: string, password: string): Promise<firebase.auth.UserCredential | Login.Error> => {
   return firebase.auth().signInWithEmailAndPassword(email, password)
@@ -21,6 +27,29 @@ export const login = (email: string, password: string): Promise<firebase.auth.Us
 
 export const logout = () => {
   return firebase.auth().signOut()
+}
+
+export const loggedInHoc = (WrappedComponent: React.ComponentType<any>, loginUrl: string = '/admin'): FunctionComponent => {
+  const { user, loading } = React.useContext(UserContext)
+
+  return (...props) => {
+    if (loading) {
+      return (
+        <div style={{
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <CircularProgress />
+        </div>
+      )
+    } else if (user) {
+      return <WrappedComponent {...props} />
+    } else {
+      return <Redirect to={loginUrl} />
+    }
+  }
 }
 
 export namespace Login {
