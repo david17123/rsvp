@@ -11,6 +11,9 @@ import MenuIcon from '@material-ui/icons/Menu'
 import { logout } from '../services/login'
 
 const useStyles = makeStyles((theme: Theme) => ({
+    root: (props: TopBar.Props) => ({
+      marginBottom: props.noSpacing ? 0 : theme.spacing(3),
+    }),
     menuButton: {
       marginRight: theme.spacing(2),
     },
@@ -20,11 +23,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   }),
 )
 
-export default function TopBar() {
-  const classes = useStyles()
+export default function TopBar(props: TopBar.Props) {
+  const classes = useStyles(props)
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" className={classes.root}>
       <Toolbar>
         <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
           <MenuIcon />
@@ -36,4 +39,10 @@ export default function TopBar() {
       </Toolbar>
     </AppBar>
   )
+}
+
+export namespace TopBar {
+  export interface Props {
+    noSpacing?: boolean
+  }
 }
