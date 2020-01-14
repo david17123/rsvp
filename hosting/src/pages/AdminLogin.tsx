@@ -61,6 +61,10 @@ export default function AdminLogin() {
       setError({
         password: 'Too many failed attempts. Try again later.',
       })
+    } else if (res === Login.Error.GENERIC) {
+      setError({
+        email: 'Failed to authenticate',
+      })
     }
     setLoading(false)
   };
@@ -102,7 +106,6 @@ export default function AdminLogin() {
           </Button>
         </form>
       </Paper>
-      <div id="firebase-drop-in-ui" />
     </Container>
   )
 }

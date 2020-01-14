@@ -16,7 +16,11 @@ export const login = (email: string, password: string): Promise<firebase.auth.Us
       } else {
         return Login.Error.GENERIC
       }
-    });
+    })
+}
+
+export const logout = () => {
+  return firebase.auth().signOut()
 }
 
 export namespace Login {
