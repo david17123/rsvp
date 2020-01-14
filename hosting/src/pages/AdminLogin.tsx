@@ -57,6 +57,10 @@ export default function AdminLogin() {
       setError({
         password: 'Invalid password',
       })
+    } else if (res === Login.Error.TOO_MANY_FAILED_ATTEMPTS) {
+      setError({
+        password: 'Too many failed attempts. Try again later.',
+      })
     }
     setLoading(false)
   };

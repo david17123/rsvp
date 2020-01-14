@@ -11,6 +11,8 @@ export const login = (email: string, password: string): Promise<firebase.auth.Us
         return Login.Error.USER_NOT_FOUND
       } else if (error.code === 'auth/wrong-password') {
         return Login.Error.WRONG_PASSWORD
+      } else if (error.code === 'auth/too-many-requests') {
+        return Login.Error.TOO_MANY_FAILED_ATTEMPTS
       } else {
         return Login.Error.GENERIC
       }
@@ -23,6 +25,7 @@ export namespace Login {
     USER_DISABLED = 'user-disabled',
     USER_NOT_FOUND = 'user-not-found',
     WRONG_PASSWORD = 'wrong-password',
+    TOO_MANY_FAILED_ATTEMPTS = 'too-many-failed-attempts',
     GENERIC = 'generic',
   }
 }
