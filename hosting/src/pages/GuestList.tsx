@@ -10,6 +10,8 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import { makeStyles } from '@material-ui/core/styles'
 
+import TopBar from '../components/TopBar'
+
 const useStyles = makeStyles((theme) => ({
   container: {
     minHeight: '100vh',
@@ -23,29 +25,33 @@ export default function GuestList() {
   const rows: Array<any> = []
 
   return (
-    <Container maxWidth="lg" className={classes.container}>
-      <TableContainer component={Paper}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Dietary requirements</TableCell>
-              <TableCell>Notes</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map(row => (
-              <TableRow key={row.name}>
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell>{row.dietaryRequirements}</TableCell>
-                <TableCell>{row.notes}</TableCell>
+    <React.Fragment>
+      <TopBar />
+
+      <Container maxWidth="lg" className={classes.container}>
+        <TableContainer component={Paper}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Dietary requirements</TableCell>
+                <TableCell>Notes</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Container>
+            </TableHead>
+            <TableBody>
+              {rows.map(row => (
+                <TableRow key={row.name}>
+                  <TableCell component="th" scope="row">
+                    {row.name}
+                  </TableCell>
+                  <TableCell>{row.dietaryRequirements}</TableCell>
+                  <TableCell>{row.notes}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Container>
+    </React.Fragment>
   )
 }
