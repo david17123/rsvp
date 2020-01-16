@@ -1,4 +1,5 @@
 import React from 'react'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 
 import Button from '@material-ui/core/Button'
 import Container from '@material-ui/core/Container'
@@ -8,6 +9,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { login, Login } from '../services/login'
+import { UserContext } from '../services/UserContext'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -28,12 +30,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function AdminLogin() {
+export default function AdminLogin(props: RouteComponentProps) {
   const classes = useStyles()
   const [loading, setLoading] = React.useState<boolean>(false)
   const [error, setError] = React.useState<{[key: string]: any}>({})
   const [email, setEmail] = React.useState<string>('')
   const [password, setPassword] = React.useState<string>('')
+  const { user, loading: loadingLoggedInUser } = React.useContext(UserContext)
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault()
@@ -69,6 +72,16 @@ export default function AdminLogin() {
     setLoading(false)
   };
 
+  if (!loadingLoggedInUser && user) {
+    const { location } = props
+    const redirectTo = location.state && location.state.from
+      ? location.state.from.pathname
+      : '/'
+
+    return (
+      <Redirect to={redirectTo} />
+    )
+  }
   return (
     <Container maxWidth="lg" className={classes.container}>
       <Paper className={classes.loginCard}>

@@ -1,10 +1,11 @@
 import firebase from 'firebase'
-import React, { FunctionComponent } from 'react'
-import { Redirect } from 'react-router-dom'
+import React from 'react'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { UserContext } from './UserContext'
+import { routePaths } from '../Routes'
 
 export const login = (email: string, password: string): Promise<firebase.auth.UserCredential | Login.Error> => {
   return firebase.auth().signInWithEmailAndPassword(email, password)
@@ -29,26 +30,28 @@ export const logout = () => {
   return firebase.auth().signOut()
 }
 
-export const loggedInHoc = (WrappedComponent: React.ComponentType<any>, loginUrl: string = '/admin'): FunctionComponent => {
+export const loggedInHoc = (WrappedComponent: React.ComponentType<any>) => (props: RouteComponentProps) => {
   const { user, loading } = React.useContext(UserContext)
+  const { location } = props
 
-  return (...props) => {
-    if (loading) {
-      return (
-        <div style={{
-          height: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <CircularProgress />
-        </div>
-      )
-    } else if (user) {
-      return <WrappedComponent {...props} />
-    } else {
-      return <Redirect to={loginUrl} />
-    }
+  if (loading) {
+    return (
+      <div style={{
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        <CircularProgress />
+      </div>
+    )
+  } else if (user) {
+    return <WrappedComponent {...props} />
+  } else {
+    return <Redirect to={{
+      pathname: routePaths.ADMIN_LOGIN,
+      state: { from: location },
+    }} />
   }
 }
 
