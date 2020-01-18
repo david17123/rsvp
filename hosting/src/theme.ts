@@ -14,9 +14,33 @@ const customTheme = createMuiTheme({
     background: {
       default: '#F9F9F9',
     },
+    text: {
+      primary: '#50625D',
+    },
   },
   typography: {
     fontFamily: 'Timeless',
+    body1: {
+      fontFamily: 'Gilroy',
+    }
+  },
+  overrides: {
+    MuiButton: {
+      outlined: {
+        borderRadius: 0,
+      },
+      outlinedPrimary: {
+        borderWidth: '2px',
+        borderColor: '#50625D',
+        fontSize: '20px',
+        '&:hover': {
+          borderWidth: '2px',
+        },
+      },
+      label: {
+        textTransform: 'none',
+      },
+    },
   },
 })
 
