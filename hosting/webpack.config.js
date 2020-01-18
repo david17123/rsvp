@@ -21,10 +21,35 @@ const webpackConfig = (env = {}) => {
           exclude: /node_modules/,
           use: ['ts-loader'],
         },
+        {
+          test: /\.s(a|c)ss$/,
+          use: [
+            'style-loader',
+            'css-loader',
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: !isProduction,
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: '[name].[ext]',
+                outputPath: 'fonts/',
+              },
+            },
+          ],
+        },
       ],
     },
     resolve: {
-      extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.scss'],
     },
     plugins: [
       new CleanWebpackPlugin(),

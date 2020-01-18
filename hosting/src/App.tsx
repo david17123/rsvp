@@ -7,6 +7,8 @@ import Routes from './Routes'
 import { UserProvider } from './services/UserContext'
 import theme from './theme'
 
+import './base.scss'
+
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
