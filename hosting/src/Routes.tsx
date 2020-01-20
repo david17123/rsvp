@@ -10,14 +10,15 @@ import { makeStyles } from '@material-ui/core/styles'
 import { loggedInHoc } from './services/login'
 
 import Home from './pages/Home'
-import About from './pages/About'
+import Rsvp from './pages/Rsvp'
 import AdminLogin from './pages/AdminLogin'
 import GuestList from './pages/GuestList'
 
 export const routePaths = {
   HOME: '/',
+  RSVP: '/rsvp',
   ADMIN_LOGIN: '/admin',
-  ADMIN_GUEST: '/admin/guest'
+  ADMIN_GUEST_LIST: '/admin/guest'
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -35,9 +36,9 @@ export default function Routes() {
       <Router>
         <Switch>
           <Route exact path={routePaths.HOME} component={Home} />
-          <Route exact path="/about" component={About} />
+          <Route path={routePaths.RSVP} component={Rsvp} />
           <Route exact path={routePaths.ADMIN_LOGIN} component={AdminLogin} />
-          <Route exact path={routePaths.ADMIN_GUEST} component={loggedInHoc(GuestList)} />
+          <Route exact path={routePaths.ADMIN_GUEST_LIST} component={loggedInHoc(GuestList)} />
         </Switch>
       </Router>
     </div>

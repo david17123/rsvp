@@ -22,7 +22,7 @@ const customTheme = createMuiTheme({
     fontFamily: 'Timeless',
     body1: {
       fontFamily: 'Gilroy',
-    }
+    },
   },
   overrides: {
     MuiButton: {
