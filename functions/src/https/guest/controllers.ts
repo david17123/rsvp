@@ -67,7 +67,7 @@ export const addGuest = async (req: ControllerTypes.AddGuest.Request, res: Respo
           } else {
             const newGuest: Guest = {
               name: guest.name,
-              dietaryRequirements: guest.dietaryRequirements ? guest.dietaryRequirements : [],
+              dietaryRequirements: guest.dietaryRequirements ? guest.dietaryRequirements : '',
               isChild: !!guest.isChild,
               bookingEmail,
               addedDate: (new Date()).toISOString(),
