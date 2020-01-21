@@ -1,8 +1,15 @@
 @font-face {
   font-family: "Timeless";
+  font-weight: normal;
   src: url("./assets/Timeless.woff") format("woff");
 }
 @font-face {
+  font-family: "Timeless";
+  font-weight: bold;
+  src: url("./assets/Timeless-Bold.woff") format("woff");
+}
+@font-face {
   font-family: "Gilroy";
+  font-weight: lighter;
   src: url("./assets/Gilroy-Light.woff") format("woff");
 }

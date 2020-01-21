@@ -43,6 +43,6 @@ export default function TopBar(props: TopBar.Props) {
 
 export namespace TopBar {
   export interface Props {
-    noSpacing?: boolean
+    noSpacing?: boolean,
   }
 }
