@@ -4,9 +4,4 @@ export namespace GuestApi {
     dietaryRequirements?: string,
     isChild?: boolean,
   }
-
-  export enum BookingTypeEnum {
-    INDIVIDUAL = 'individual',
-    FAMILY = 'family',
-  }
 }
