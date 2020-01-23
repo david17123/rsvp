@@ -12,6 +12,7 @@ import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
 import { BookingApi } from '../services/bookingApi'
+import { GuestApi } from '../services/guestApi'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -36,13 +37,46 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IndividualBookingForm(props: IndividualBookingForm.Props) {
   const classes = useStyles()
-  const [hasPlusOne, setHasPlusOne] = React.useState<string>('')
+  const [hasPlusOne, setHasPlusOne] = React.useState<'yes' | 'none' | ''>('')
 
-  const handleChange = (updateObject: Partial<BookingApi.Model>) => {
-    return props.onChange({
-      ...props.value,
-      ...updateObject,
+  const handleBookingChange = (updateBookingObject: Partial<BookingApi.Model>) => {
+    return props.onBookingChange({
+      ...props.booking,
+      ...updateBookingObject,
     })
+  }
+
+  const handleGuestChange = (updateGuestObject: Partial<GuestApi.Model>, index: number) => {
+    if (props.guests.length >= index && index !== 0) {
+      throw new Error(`Index guest to update is out of range: ${index}`)
+    }
+
+    let updatedGuests: Array<GuestApi.Model> = [ ...props.guests ]
+    if (updatedGuests.length === 0) {
+      updatedGuests = [{ isChild: false }] // First guest, who is the one making the booking, is assumed to be not a child
+    }
+    updatedGuests[index] = {
+      ...updatedGuests[index],
+      ...updateGuestObject,
+    }
+
+    return props.onGuestsChange(updatedGuests)
+  }
+
+  const handlePlusOneChange = (value: 'yes' | 'none') => {
+    if (value === 'yes') {
+      const updatedGuests = [ ...props.guests ]
+      if (updatedGuests.length === 0) {
+        updatedGuests.push({})
+      }
+      if (updatedGuests.length === 1) {
+        updatedGuests.push({})
+      }
+      props.onGuestsChange(updatedGuests)
+    } else {
+      props.onGuestsChange(props.guests.slice(0, 1))
+    }
+    setHasPlusOne(value)
   }
 
   return (
@@ -53,8 +87,11 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
           className={classes.textFields}
           id="full-name"
           label="Full name"
-          value={props.value.name}
-          onChange={(val) => handleChange({ name: val.target.value })}
+          value={props.booking.name || ''}
+          onChange={(event) => {
+            handleBookingChange({ name: event.target.value });
+            handleGuestChange({ name: event.target.value }, 0);
+          }}
           required
         />
         <TextField
@@ -62,8 +99,8 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
           id="email"
           label="Email address"
           type="email"
-          value={props.value.email}
-          onChange={(val) => handleChange({ email: val.target.value })}
+          value={props.booking.email || ''}
+          onChange={(event) => handleBookingChange({ email: event.target.value })}
           required
         />
         <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
@@ -74,10 +111,12 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
           variant="outlined"
           multiline
           rows={3}
+          value={props.guests.length > 0 ? props.guests[0].dietaryRequirements : ''}
+          onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, 0)}
         />
         <FormControl component="fieldset">
           <FormLabel className={classes.formLabel}>Will you be inviting a +1?</FormLabel>
-          <RadioGroup aria-label="Plus one" name="customized-radios" value={hasPlusOne} onChange={(val) => setHasPlusOne(val.target.value)}>
+          <RadioGroup aria-label="Plus one" name="customized-radios" value={hasPlusOne} onChange={(val) => handlePlusOneChange(val.target.value === 'yes' ? 'yes' : 'none')}>
             <FormControlLabel className={classes.radioOptionContainer} value="yes" control={<Radio color="primary" />} label="Yes" />
             <FormControlLabel className={classes.radioOptionContainer} value="none" control={<Radio color="primary" />} label="None" />
           </RadioGroup>
@@ -87,7 +126,14 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
       {hasPlusOne === 'yes' && (
         <Box component="div" display="flex" flexDirection="column" marginTop={3}>
           <Typography className={classes.title} variant="h5" component="h1">+1 details</Typography>
-          <TextField className={classes.textFields} id="full-name" label="Full name" required />
+          <TextField
+            className={classes.textFields}
+            id="full-name"
+            label="Full name"
+            required
+            value={props.guests.length >= 2 ? props.guests[1].name : ''}
+            onChange={(event) => handleGuestChange({ name: event.target.value }, 1)}
+          />
           <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
           <TextField
             className={classes.textFields}
@@ -96,6 +142,8 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
             variant="outlined"
             multiline
             rows={3}
+            value={props.guests.length >= 2 ? props.guests[1].dietaryRequirements : ''}
+            onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, 1)}
           />
         </Box>
       )}
@@ -106,7 +154,10 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
 
 export namespace IndividualBookingForm {
   export interface Props {
-    onChange: (val: BookingApi.Model) => any,
-    value: BookingApi.Model,
+    onBookingChange: (val: BookingApi.Model) => any,
+    onGuestsChange: (val: Array<GuestApi.Model>) => any,
+    booking: BookingApi.Model,
+    /** First element of guests array is always assumed to be the person making the booking */
+    guests: Array<GuestApi.Model>,
   }
 }
