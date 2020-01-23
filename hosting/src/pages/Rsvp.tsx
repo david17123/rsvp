@@ -29,22 +29,22 @@ export default function Rsvp() {
     <div>
       <Container maxWidth="lg" className={classes.container}>
         <BookingTypeForm onSelect={(val) => updateBooking({ type: val })} />
-        <div>
+        {booking.type && booking.type === BookingApi.BookingTypeEnum.INDIVIDUAL && (
           <IndividualBookingForm
             booking={booking}
             guests={guests}
             onBookingChange={(val) => updateBooking(val)}
             onGuestsChange={(val) => setGuests(val)}
           />
-        </div>
-        <div>
+        )}
+        {booking.type && booking.type === BookingApi.BookingTypeEnum.FAMILY && (
           <FamilyBookingForm
             booking={booking}
             guests={guests}
             onBookingChange={(val) => updateBooking(val)}
             onGuestsChange={(val) => setGuests(val)}
           />
-        </div>
+        )}
       </Container>
     </div>
   )

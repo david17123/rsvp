@@ -37,13 +37,23 @@ export default function BookingTypeForm(props: BookingTypeForm.Props) {
       <Typography className={classes.text} variant="body1">You are&hellip;</Typography>
       <div>
         <div className={classes.iconButtonContainer}>
-          <Button className={classes.iconButton} variant="outlined" color="primary">
+          <Button
+            className={classes.iconButton}
+            variant="outlined"
+            color="primary"
+            onClick={() => props.onSelect(BookingApi.BookingTypeEnum.INDIVIDUAL)}
+          >
             <IndividualIcon />
           </Button>
           <Typography variant="body2">An individual</Typography>
         </div>
         <div className={classes.iconButtonContainer}>
-          <Button className={classes.iconButton} variant="outlined" color="primary">
+          <Button
+            className={classes.iconButton}
+            variant="outlined"
+            color="primary"
+            onClick={() => props.onSelect(BookingApi.BookingTypeEnum.FAMILY)}
+          >
             <FamilyIcon />
           </Button>
           <Typography variant="body2">A family</Typography>
