@@ -4,6 +4,7 @@ import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 
 import BookingTypeForm from '../components/BookingTypeForm'
+import FamilyBookingForm from '../components/FamilyBookingForm'
 import IndividualBookingForm from '../components/IndividualBookingForm'
 import { BookingApi } from '../services/bookingApi'
 import { GuestApi } from '../services/guestApi'
@@ -30,6 +31,14 @@ export default function Rsvp() {
         <BookingTypeForm onSelect={(val) => updateBooking({ type: val })} />
         <div>
           <IndividualBookingForm
+            booking={booking}
+            guests={guests}
+            onBookingChange={(val) => updateBooking(val)}
+            onGuestsChange={(val) => setGuests(val)}
+          />
+        </div>
+        <div>
+          <FamilyBookingForm
             booking={booking}
             guests={guests}
             onBookingChange={(val) => updateBooking(val)}

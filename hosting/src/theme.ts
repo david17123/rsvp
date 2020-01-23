@@ -65,6 +65,11 @@ const customTheme = createMuiTheme({
         borderRadius: 0,
       },
     },
+    MuiSelect: {
+      root: {
+        fontFamily: 'Gilroy',
+      },
+    },
   },
 })
 

@@ -3,11 +3,10 @@ import React from 'react'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormLabel from '@material-ui/core/FormLabel'
+import MenuItem from '@material-ui/core/MenuItem'
 import { makeStyles } from '@material-ui/core/styles'
-import Radio from '@material-ui/core/Radio'
-import RadioGroup from '@material-ui/core/RadioGroup'
+import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
@@ -37,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IndividualBookingForm(props: IndividualBookingForm.Props) {
   const classes = useStyles()
-  const [hasPlusOne, setHasPlusOne] = React.useState<'yes' | 'none' | ''>('')
+  const [familyOf, setFamilyOf] = React.useState<number>(1)
 
   const handleBookingChange = (updateBookingObject: Partial<BookingApi.Model>) => {
     return props.onBookingChange({
@@ -63,20 +62,64 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
     return props.onGuestsChange(updatedGuests)
   }
 
-  const handlePlusOneChange = (value: 'yes' | 'none') => {
-    if (value === 'yes') {
-      const updatedGuests = [ ...props.guests ]
-      if (updatedGuests.length === 0) {
-        updatedGuests.push({ isChild: false }) // Guests of individual booking is assumed to be not a child
-      }
-      if (updatedGuests.length === 1) {
-        updatedGuests.push({ isChild: false }) // Guests of individual booking is assumed to be not a child
-      }
-      props.onGuestsChange(updatedGuests)
-    } else {
-      props.onGuestsChange(props.guests.slice(0, 1))
+  const getOrdinal = (n: number) => {
+    if (n % 10 === 1) {
+      return 'st'
+    } else if (n % 10 === 2 && n % 100 !== 12) {
+      return 'nd'
+    } else if (n % 10 === 3) {
+      return 'rd'
     }
-    setHasPlusOne(value)
+    return 'th'
+  }
+
+  const handleFamilyOfChange = (value: number) => {
+    if (value <= 0) {
+      throw new Error(`Invalid family of value: ${value} (minimum 1)`)
+    }
+
+    const updatedGuests = [ ...props.guests ]
+    while (updatedGuests.length < value) {
+      updatedGuests.push({})
+    }
+    props.onGuestsChange(updatedGuests.slice(0, value))
+    setFamilyOf(value)
+  }
+
+  const renderGuestsForm = () => {
+    if (familyOf < 2) {
+      return null
+    }
+
+    const forms = []
+    for (let i = 1; i < familyOf; i += 1) {
+      forms.push(
+        <Box key={i} component="div" display="flex" flexDirection="column" marginTop={3}>
+          <Typography className={classes.title} variant="h5" component="h1">{i+1}<sup>{getOrdinal(i+1)}</sup> member</Typography>
+          <TextField
+            className={classes.textFields}
+            id="full-name"
+            label="Full name"
+            required
+            value={props.guests.length >= i + 1 && props.guests[i].name ? props.guests[i].name : ''}
+            onChange={(event) => handleGuestChange({ name: event.target.value }, i)}
+          />
+          <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
+          <TextField
+            className={classes.textFields}
+            id="dietary-requirement"
+            placeholder="Allergy, restrictions, etc."
+            variant="outlined"
+            multiline
+            rows={3}
+            value={props.guests.length >= i + 1 && props.guests[i].dietaryRequirements ? props.guests[i].dietaryRequirements : ''}
+            onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, i)}
+          />
+        </Box>
+      )
+    }
+
+    return forms
   }
 
   return (
@@ -114,39 +157,26 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
           value={props.guests.length > 0 ? props.guests[0].dietaryRequirements : ''}
           onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, 0)}
         />
-        <FormControl component="fieldset">
-          <FormLabel className={classes.formLabel}>Will you be inviting a +1?</FormLabel>
-          <RadioGroup aria-label="Plus one" name="customized-radios" value={hasPlusOne} onChange={(val) => handlePlusOneChange(val.target.value === 'yes' ? 'yes' : 'none')}>
-            <FormControlLabel className={classes.radioOptionContainer} value="yes" control={<Radio color="primary" />} label="Yes" />
-            <FormControlLabel className={classes.radioOptionContainer} value="none" control={<Radio color="primary" />} label="None" />
-          </RadioGroup>
+
+        <FormLabel className={classes.formLabel}>You are a family of&hellip;</FormLabel>
+        <FormControl variant="outlined">
+          <Select
+            id="family-of"
+            value={familyOf}
+            onChange={(event) => handleFamilyOfChange(event.target.value as number)}
+          >
+            <MenuItem value={1}>
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={2}>2 (Two)</MenuItem>
+            <MenuItem value={3}>3 (Three)</MenuItem>
+            <MenuItem value={4}>4 (Four)</MenuItem>
+          </Select>
         </FormControl>
       </Box>
 
-      {hasPlusOne === 'yes' && (
-        <Box component="div" display="flex" flexDirection="column" marginTop={3}>
-          <Typography className={classes.title} variant="h5" component="h1">+1 details</Typography>
-          <TextField
-            className={classes.textFields}
-            id="full-name"
-            label="Full name"
-            required
-            value={props.guests.length >= 2 && props.guests[1].name ? props.guests[1].name : ''}
-            onChange={(event) => handleGuestChange({ name: event.target.value }, 1)}
-          />
-          <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
-          <TextField
-            className={classes.textFields}
-            id="dietary-requirement"
-            placeholder="Allergy, restrictions, etc."
-            variant="outlined"
-            multiline
-            rows={3}
-            value={props.guests.length >= 2 && props.guests[1].dietaryRequirements ? props.guests[1].dietaryRequirements : ''}
-            onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, 1)}
-          />
-        </Box>
-      )}
+      {renderGuestsForm()}
+
       <Button className={classes.submitButton} variant="contained" color="primary" disableElevation>All done!</Button>
     </div>
   )
