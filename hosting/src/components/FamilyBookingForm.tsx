@@ -123,7 +123,7 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
   }
 
   return (
-    <div>
+    <React.Fragment>
       <Box component="div" display="flex" flexDirection="column">
         <Typography className={classes.title} variant="h5" component="h1">Your details</Typography>
         <TextField
@@ -178,7 +178,7 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
       {renderGuestsForm()}
 
       <Button className={classes.submitButton} variant="contained" color="primary" disableElevation>All done!</Button>
-    </div>
+    </React.Fragment>
   )
 }
 
