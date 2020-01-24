@@ -41,6 +41,10 @@ export default function Rsvp() {
     setShowForm(true)
   }
 
+  const handleFormSubmit = () => {
+    alert('Should submit booking!')
+  }
+
   return (
     <div>
       <Container maxWidth="lg" className={classes.container}>
@@ -60,6 +64,7 @@ export default function Rsvp() {
               guests={guests}
               onBookingChange={(val) => updateBooking(val)}
               onGuestsChange={(val) => setGuests(val)}
+              onSubmit={handleFormSubmit}
             />
           </React.Fragment>
         )}
@@ -76,6 +81,7 @@ export default function Rsvp() {
               guests={guests}
               onBookingChange={(val) => updateBooking(val)}
               onGuestsChange={(val) => setGuests(val)}
+              onSubmit={handleFormSubmit}
             />
           </React.Fragment>
         )}
