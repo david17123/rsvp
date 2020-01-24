@@ -177,7 +177,15 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
 
       {renderGuestsForm()}
 
-      <Button className={classes.submitButton} variant="contained" color="primary" disableElevation>All done!</Button>
+      <Button
+        className={classes.submitButton}
+        variant="contained"
+        color="primary"
+        disableElevation
+        onClick={() => props.onSubmit()}
+      >
+        All done!
+      </Button>
     </React.Fragment>
   )
 }
@@ -186,6 +194,7 @@ export namespace IndividualBookingForm {
   export interface Props {
     onBookingChange: (val: BookingApi.Model) => any,
     onGuestsChange: (val: Array<GuestApi.Model>) => any,
+    onSubmit: () => any,
     booking: BookingApi.Model,
     /** First element of guests array is always assumed to be the person making the booking */
     guests: Array<GuestApi.Model>,
