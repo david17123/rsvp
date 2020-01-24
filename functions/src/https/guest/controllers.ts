@@ -45,6 +45,25 @@ export const browseGuests = async (req: ControllerTypes.BrowseGuest.Request, res
       error: e.message
     });
   }
+};
+
+export const browseAllGuests = async (req: ControllerTypes.BrowseAllGuest.Request, res: Response) => {
+  try {
+    const guestCollection = db.collection('guest');
+    const allGuests: Array<Guest> = [];
+    const allGuestsSnapshot = await guestCollection.get();
+    allGuestsSnapshot.forEach((doc) => {
+      allGuests.push(<Guest> doc.data());
+    });
+
+    res.json(allGuests);
+  } catch (e) {
+    console.error(e);
+    res.statusCode = 500;
+    res.json({
+      error: e.message
+    });
+  }
 }
 
 export const addGuest = async (req: ControllerTypes.AddGuest.Request, res: Response) => {

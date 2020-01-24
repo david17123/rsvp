@@ -23,6 +23,13 @@ export namespace BrowseGuest {
   }
 }
 
+export namespace BrowseAllGuest {
+  export interface Request extends ExpressRequest {
+    params: {},
+    body: {},
+  }
+}
+
 export namespace AddGuest {
   export interface Request extends ExpressRequest {
     params: {},
