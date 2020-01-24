@@ -1,4 +1,5 @@
 import React from 'react'
+import { RouteComponentProps } from 'react-router-dom'
 
 import Button from '@material-ui/core/Button'
 import Container from '@material-ui/core/Container'
@@ -11,6 +12,7 @@ import IndividualBookingForm from '../components/IndividualBookingForm'
 import { BookingApi } from '../services/bookingApi'
 import { GuestApi } from '../services/guestApi'
 import { deepMerge } from '../utils'
+import { routePaths } from '../Routes'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function Rsvp() {
+export default function Rsvp(props: RouteComponentProps) {
   const classes = useStyles()
   const [booking, setBooking] = React.useState<BookingApi.Model>({ bookingDate: new Date() })
   const [guests, setGuests] = React.useState<Array<GuestApi.Model>>([])
@@ -43,49 +45,48 @@ export default function Rsvp() {
 
   const handleFormSubmit = () => {
     alert('Should submit booking!')
+    props.history.push(routePaths.THANK_YOU)
   }
 
   return (
-    <div>
-      <Container maxWidth="lg" className={classes.container}>
-        {(!showForm || !booking.type) && (
-          <BookingTypeForm onSelect={(val) => handleSetBookingType(val)} />
-        )}
-        {showForm && booking.type && booking.type === BookingApi.BookingTypeEnum.INDIVIDUAL && (
-          <React.Fragment>
-            <div className={classes.formHeader}>
-              <Button color="primary" className={classes.backButton} onClick={() => setShowForm(false)}>
-                <KeyboardArrowLeftIcon />
-                Go back
-              </Button>
-            </div>
-            <IndividualBookingForm
-              booking={booking}
-              guests={guests}
-              onBookingChange={(val) => updateBooking(val)}
-              onGuestsChange={(val) => setGuests(val)}
-              onSubmit={handleFormSubmit}
-            />
-          </React.Fragment>
-        )}
-        {showForm && booking.type && booking.type === BookingApi.BookingTypeEnum.FAMILY && (
-          <React.Fragment>
-            <div className={classes.formHeader}>
-              <Button color="primary" className={classes.backButton} onClick={() => setShowForm(false)}>
-                <KeyboardArrowLeftIcon />
-                Go back
-              </Button>
-            </div>
-            <FamilyBookingForm
-              booking={booking}
-              guests={guests}
-              onBookingChange={(val) => updateBooking(val)}
-              onGuestsChange={(val) => setGuests(val)}
-              onSubmit={handleFormSubmit}
-            />
-          </React.Fragment>
-        )}
-      </Container>
-    </div>
+    <Container maxWidth="lg" className={classes.container}>
+      {(!showForm || !booking.type) && (
+        <BookingTypeForm onSelect={(val) => handleSetBookingType(val)} />
+      )}
+      {showForm && booking.type && booking.type === BookingApi.BookingTypeEnum.INDIVIDUAL && (
+        <React.Fragment>
+          <div className={classes.formHeader}>
+            <Button color="primary" className={classes.backButton} onClick={() => setShowForm(false)}>
+              <KeyboardArrowLeftIcon />
+              Go back
+            </Button>
+          </div>
+          <IndividualBookingForm
+            booking={booking}
+            guests={guests}
+            onBookingChange={(val) => updateBooking(val)}
+            onGuestsChange={(val) => setGuests(val)}
+            onSubmit={handleFormSubmit}
+          />
+        </React.Fragment>
+      )}
+      {showForm && booking.type && booking.type === BookingApi.BookingTypeEnum.FAMILY && (
+        <React.Fragment>
+          <div className={classes.formHeader}>
+            <Button color="primary" className={classes.backButton} onClick={() => setShowForm(false)}>
+              <KeyboardArrowLeftIcon />
+              Go back
+            </Button>
+          </div>
+          <FamilyBookingForm
+            booking={booking}
+            guests={guests}
+            onBookingChange={(val) => updateBooking(val)}
+            onGuestsChange={(val) => setGuests(val)}
+            onSubmit={handleFormSubmit}
+          />
+        </React.Fragment>
+      )}
+    </Container>
   )
 }
