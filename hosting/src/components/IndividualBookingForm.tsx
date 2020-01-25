@@ -4,6 +4,7 @@ import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import FormLabel from '@material-ui/core/FormLabel'
 import { makeStyles } from '@material-ui/core/styles'
 import Radio from '@material-ui/core/Radio'
@@ -13,6 +14,7 @@ import Typography from '@material-ui/core/Typography'
 
 import { BookingApi } from '../services/bookingApi'
 import { GuestApi } from '../services/guestApi'
+import { isValidEmail } from '../utils'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -38,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
 export default function IndividualBookingForm(props: IndividualBookingForm.Props) {
   const classes = useStyles()
   const [hasPlusOne, setHasPlusOne] = React.useState<'yes' | 'none' | ''>('')
+  const [errors, setErrors] = React.useState<IndividualBookingForm.FormError>({})
 
   const handleBookingChange = (updateBookingObject: Partial<BookingApi.Model>) => {
     return props.onBookingChange({
@@ -79,6 +82,38 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
     setHasPlusOne(value)
   }
 
+  const handleSubmit = () => {
+    const compiledErrors: IndividualBookingForm.FormError = {}
+    if (!props.booking.name) {
+      compiledErrors.name = 'Name is required'
+    }
+    if (!props.booking.email) {
+      compiledErrors.email = 'Email is required'
+    } else if (!isValidEmail(props.booking.email)) {
+      compiledErrors.email = 'Email is invalid'
+    }
+    if (hasPlusOne === '') {
+      compiledErrors.hasPlusOne = 'This field is required'
+    }
+
+    if (hasPlusOne === 'yes' && props.guests.length > 0) {
+      const guest = props.guests[0]
+      const plusOneErrors: IndividualBookingForm.PlusOneError = {}
+      if (!guest.name) {
+        plusOneErrors.name = 'Name is required'
+      }
+
+      if (Object.keys(plusOneErrors).length > 0) {
+        compiledErrors.plusOne = plusOneErrors
+      }
+    }
+    setErrors(compiledErrors)
+
+    if (Object.keys(compiledErrors).length === 0) {
+      props.onSubmit()
+    }
+  }
+
   return (
     <React.Fragment>
       <Box component="div" display="flex" flexDirection="column">
@@ -92,6 +127,8 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
             handleBookingChange({ name: event.target.value });
             handleGuestChange({ name: event.target.value }, 0);
           }}
+          error={!!errors.name}
+          helperText={errors.name}
           required
         />
         <TextField
@@ -101,6 +138,8 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
           type="email"
           value={props.booking.email || ''}
           onChange={(event) => handleBookingChange({ email: event.target.value })}
+          error={!!errors.email}
+          helperText={errors.email}
           required
         />
         <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
@@ -114,9 +153,14 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
           value={props.guests.length > 0 ? props.guests[0].dietaryRequirements : ''}
           onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, 0)}
         />
-        <FormControl component="fieldset">
+        <FormControl
+          component="fieldset"
+          error={!!errors.hasPlusOne}
+          required
+        >
           <FormLabel className={classes.formLabel}>Will you be inviting a +1?</FormLabel>
-          <RadioGroup aria-label="Plus one" name="customized-radios" value={hasPlusOne} onChange={(val) => handlePlusOneChange(val.target.value === 'yes' ? 'yes' : 'none')}>
+          {!!errors.hasPlusOne && <FormHelperText error>{errors.hasPlusOne}</FormHelperText>}
+          <RadioGroup aria-label="Plus one" name="customized-radios" value={hasPlusOne} onChange={(event) => handlePlusOneChange(event.target.value === 'yes' ? 'yes' : 'none')}>
             <FormControlLabel className={classes.radioOptionContainer} value="yes" control={<Radio color="primary" />} label="Yes" />
             <FormControlLabel className={classes.radioOptionContainer} value="none" control={<Radio color="primary" />} label="None" />
           </RadioGroup>
@@ -133,6 +177,8 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
             required
             value={props.guests.length >= 2 && props.guests[1].name ? props.guests[1].name : ''}
             onChange={(event) => handleGuestChange({ name: event.target.value }, 1)}
+            error={errors.plusOne && !!errors.plusOne.name}
+            helperText={errors.plusOne && errors.plusOne.name}
           />
           <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
           <TextField
@@ -152,7 +198,7 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
         variant="contained"
         color="primary"
         disableElevation
-        onClick={() => props.onSubmit()}
+        onClick={handleSubmit}
       >
         All done!
       </Button>
@@ -162,11 +208,20 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
 
 export namespace IndividualBookingForm {
   export interface Props {
-    onBookingChange: (val: BookingApi.Model) => any,
+    onBookingChange: (val: Partial<BookingApi.Model>) => any,
     onGuestsChange: (val: Array<GuestApi.Model>) => any,
     onSubmit: () => any,
-    booking: BookingApi.Model,
+    booking: Partial<BookingApi.Model>,
     /** First element of guests array is always assumed to be the person making the booking */
     guests: Array<GuestApi.Model>,
+  }
+  export interface FormError {
+    name?: string,
+    email?: string,
+    hasPlusOne?: string,
+    plusOne?: PlusOneError,
+  }
+  export interface PlusOneError {
+    name?: string,
   }
 }

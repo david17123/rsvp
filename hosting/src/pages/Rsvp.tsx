@@ -9,8 +9,8 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import BookingTypeForm from '../components/BookingTypeForm'
 import FamilyBookingForm from '../components/FamilyBookingForm'
 import IndividualBookingForm from '../components/IndividualBookingForm'
-import { BookingApi } from '../services/bookingApi'
-import { GuestApi } from '../services/guestApi'
+import { BookingApi, addBooking } from '../services/bookingApi'
+import { GuestApi, addGuests } from '../services/guestApi'
 import { deepMerge } from '../utils'
 import { routePaths } from '../Routes'
 
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Rsvp(props: RouteComponentProps) {
   const classes = useStyles()
-  const [booking, setBooking] = React.useState<BookingApi.Model>({ bookingDate: new Date() })
+  const [booking, setBooking] = React.useState<Partial<BookingApi.Model>>({ bookingDate: new Date() })
   const [guests, setGuests] = React.useState<Array<GuestApi.Model>>([])
   const [showForm, setShowForm] = React.useState<boolean>(false)
 
@@ -43,9 +43,17 @@ export default function Rsvp(props: RouteComponentProps) {
     setShowForm(true)
   }
 
-  const handleFormSubmit = () => {
-    alert('Should submit booking!')
-    props.history.push(routePaths.THANK_YOU)
+  const handleFormSubmit = async () => {
+    try {
+      const bookingToSubmit: BookingApi.Model = booking as BookingApi.Model
+      await addBooking(bookingToSubmit)
+      await addGuests(bookingToSubmit.email, guests)
+      props.history.push(routePaths.THANK_YOU)
+    } catch (e) {
+      // Might want to report to error reporting tool like Sentry
+      alert(`Error: ${e.message}`)
+      console.error(e)
+    }
   }
 
   return (
