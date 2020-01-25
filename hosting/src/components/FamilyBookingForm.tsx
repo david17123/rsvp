@@ -170,7 +170,7 @@ export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
             error={!!errors.familyMembers && errors.familyMembers.length >= i && !!errors.familyMembers[i - 1].isChild}
             required
           >
-            <FormLabel className={classes.formLabel}>Will you be inviting a +1?</FormLabel>
+            <FormLabel className={classes.formLabel}>Is this family member under 7 yo?</FormLabel>
             {!!errors.familyMembers && errors.familyMembers.length >= i && !!errors.familyMembers[i - 1].isChild && (
               <FormHelperText error>{errors.familyMembers && errors.familyMembers.length >= i && errors.familyMembers[i - 1].isChild}</FormHelperText>
             )}
