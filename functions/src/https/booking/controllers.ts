@@ -45,7 +45,7 @@ export const browseBookings = async (req: ControllerTypes.BrowseBooking.Request,
 
 export const addBooking = async (req: ControllerTypes.AddBooking.Request, res: Response) => {
   try {
-    const { email, name } = req.body;
+    const { email, name, type } = req.body;
 
     const bookingCollection = db.collection('booking');
     const existingBooking = await bookingCollection.where('email', '==', email).get();
@@ -56,6 +56,7 @@ export const addBooking = async (req: ControllerTypes.AddBooking.Request, res: R
     const newBooking: Booking = {
       email,
       name,
+      type,
       bookingDate: (new Date()).toISOString(),
     };
     await bookingCollection.add(newBooking);
