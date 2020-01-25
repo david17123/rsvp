@@ -20,8 +20,8 @@ export const addGuests = async (bookingEmail: string, guests: Array<GuestApi.Mod
 
 export namespace GuestApi {
   export interface Model {
-    name?: string,
+    name: string,
     dietaryRequirements?: string,
-    isChild?: boolean,
+    isChild: boolean,
   }
 }

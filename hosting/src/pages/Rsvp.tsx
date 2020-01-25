@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Rsvp(props: RouteComponentProps) {
   const classes = useStyles()
   const [booking, setBooking] = React.useState<Partial<BookingApi.Model>>({ bookingDate: new Date() })
-  const [guests, setGuests] = React.useState<Array<GuestApi.Model>>([])
+  const [guests, setGuests] = React.useState<Array<Partial<GuestApi.Model>>>([])
   const [showForm, setShowForm] = React.useState<boolean>(false)
 
   const updateBooking = (updateObject: Partial<BookingApi.Model>) => {
@@ -46,8 +46,9 @@ export default function Rsvp(props: RouteComponentProps) {
   const handleFormSubmit = async () => {
     try {
       const bookingToSubmit: BookingApi.Model = booking as BookingApi.Model
+      const guestsToSubmit: Array<GuestApi.Model> = guests as Array<GuestApi.Model>
       await addBooking(bookingToSubmit)
-      await addGuests(bookingToSubmit.email, guests)
+      await addGuests(bookingToSubmit.email, guestsToSubmit)
       props.history.push(routePaths.THANK_YOU)
     } catch (e) {
       // Might want to report to error reporting tool like Sentry

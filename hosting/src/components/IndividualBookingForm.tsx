@@ -54,7 +54,7 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
       throw new Error(`Index guest to update is out of range: ${index}`)
     }
 
-    let updatedGuests: Array<GuestApi.Model> = [ ...props.guests ]
+    let updatedGuests: Array<Partial<GuestApi.Model>> = [ ...props.guests ]
     if (updatedGuests.length === 0) {
       updatedGuests = [{ isChild: false }] // First guest, who is the one making the booking, is assumed to be not a child
     }
@@ -96,8 +96,8 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
       compiledErrors.hasPlusOne = 'This field is required'
     }
 
-    if (hasPlusOne === 'yes' && props.guests.length > 0) {
-      const guest = props.guests[0]
+    if (hasPlusOne === 'yes' && props.guests.length > 1) {
+      const guest = props.guests[1]
       const plusOneErrors: IndividualBookingForm.PlusOneError = {}
       if (!guest.name) {
         plusOneErrors.name = 'Name is required'
@@ -209,11 +209,11 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
 export namespace IndividualBookingForm {
   export interface Props {
     onBookingChange: (val: Partial<BookingApi.Model>) => any,
-    onGuestsChange: (val: Array<GuestApi.Model>) => any,
+    onGuestsChange: (val: Array<Partial<GuestApi.Model>>) => any,
     onSubmit: () => any,
     booking: Partial<BookingApi.Model>,
     /** First element of guests array is always assumed to be the person making the booking */
-    guests: Array<GuestApi.Model>,
+    guests: Array<Partial<GuestApi.Model>>,
   }
   export interface FormError {
     name?: string,
