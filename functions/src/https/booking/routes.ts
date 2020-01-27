@@ -7,7 +7,7 @@ import {
   addBooking,
   editBooking,
 } from './controllers';
-import loggedInMiddleware from '../middlewares/loggedin';
+import loggedInMiddleware from '../middlewares/loggedIn';
 
 const app = express();
 
