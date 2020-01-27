@@ -4,10 +4,11 @@ import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import IndividualIcon from '@material-ui/icons/FaceOutlined'
-import FamilyIcon from '@material-ui/icons/SupervisedUserCircleOutlined'
 
 import { BookingApi } from '../services/bookingApi'
+
+const IndividualIcon = require('../assets/individual_icon.svg').default as string;
+const FamilyIcon = require('../assets/family_icon.svg').default as string;
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -26,35 +27,51 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
     marginBottom: theme.spacing(1),
   },
+  individualIconButton: {
+    padding: theme.spacing(3),
+    marginBottom: theme.spacing(1),
+  },
+  familyIconButton: {
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+  },
+  individualButtonIcon: {
+    width: theme.spacing(5),
+    height: theme.spacing(5),
+  },
+  familyButtonIcon: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+  },
 }))
 
 export default function BookingTypeForm(props: BookingTypeForm.Props) {
   const classes = useStyles()
 
   return (
-    <Box component="div" height="100vh" display="flex" flexDirection="column" justifyContent="center">
+    <Box component="div" display="flex" flexDirection="column" justifyContent="center" marginTop={12}>
       <Typography className={classes.title} variant="h4" component="h1">Hello,</Typography>
       <Typography className={classes.text} variant="body1">You are&hellip;</Typography>
       <div>
         <div className={classes.iconButtonContainer}>
           <Button
-            className={classes.iconButton}
+            className={classes.individualIconButton}
             variant="outlined"
             color="primary"
             onClick={() => props.onSelect(BookingApi.BookingTypeEnum.INDIVIDUAL)}
           >
-            <IndividualIcon />
+            <img className={classes.individualButtonIcon} src={IndividualIcon} />
           </Button>
           <Typography variant="body2">An individual</Typography>
         </div>
         <div className={classes.iconButtonContainer}>
           <Button
-            className={classes.iconButton}
+            className={classes.familyIconButton}
             variant="outlined"
             color="primary"
             onClick={() => props.onSelect(BookingApi.BookingTypeEnum.FAMILY)}
           >
-            <FamilyIcon />
+            <img className={classes.familyButtonIcon} src={FamilyIcon} />
           </Button>
           <Typography variant="body2">A family</Typography>
         </div>
