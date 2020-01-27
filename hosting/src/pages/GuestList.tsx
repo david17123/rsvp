@@ -183,7 +183,7 @@ const GuestRow = (props: GuestList.GuestRow.Props) => {
       <TableCell>{guest.dietaryRequirements}</TableCell>
       <TableCell>{guest.addedDate.toLocaleDateString()}</TableCell>
       <TableCell align="right">
-        <IconButton disabled={disabled} aria-label="edit" onClick={handleEdit}>
+        <IconButton disabled aria-label="edit" onClick={handleEdit}>
           <EditIcon />
         </IconButton>
         <IconButton disabled={disabled} aria-label="delete" onClick={handleDelete}>
