@@ -70,6 +70,15 @@ const customTheme = createMuiTheme({
         fontFamily: 'Gilroy',
       },
     },
+    MuiTableCell: {
+      head: {
+        fontFamily: 'Gilroy',
+        fontWeight: 'bold',
+      },
+      body: {
+        fontFamily: 'Gilroy',
+      },
+    },
   },
 })
 

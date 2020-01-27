@@ -2,6 +2,7 @@ import firebase from 'firebase'
 import React from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 
+import Box from '@material-ui/core/Box'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { UserContext } from './UserContext'
@@ -36,14 +37,14 @@ export const loggedInHoc = (WrappedComponent: React.ComponentType<any>) => (prop
 
   if (loading) {
     return (
-      <div style={{
-        height: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
+      <Box
+        height="100vh"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
         <CircularProgress />
-      </div>
+      </Box>
     )
   } else if (user) {
     return <WrappedComponent {...props} />
