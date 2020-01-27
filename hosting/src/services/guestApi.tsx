@@ -37,11 +37,35 @@ export const browseAllGuests = async (idToken: string): Promise<Array<GuestApi.M
   })) as Array<GuestApi.Model>
 }
 
+export const deleteGuest = async (bookingEmail: string, name: string): Promise<GuestApi.Model> => {
+  const response = await fetch(`${process.env.API_URL}/guest`, {
+    method: 'DELETE',
+    mode: 'cors',
+    cache: 'no-cache',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      bookingEmail,
+      name,
+    }),
+  })
+  const responseBody = await response.json()
+  if (!response.ok) {
+    throw new Error(responseBody.error || 'Failed to delete guest')
+  }
+  return {
+    ...responseBody,
+    addedDate: new Date(responseBody.addedDate),
+  } as GuestApi.Model
+}
+
 export namespace GuestApi {
   export interface Model {
     name: string,
     dietaryRequirements?: string,
     isChild: boolean,
     addedDate: Date,
+    bookingEmail: string,
   }
 }

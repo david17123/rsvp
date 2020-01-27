@@ -3,6 +3,7 @@ import React from 'react'
 import Box from '@material-ui/core/Box'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Container from '@material-ui/core/Container'
+import IconButton from '@material-ui/core/IconButton'
 import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -13,9 +14,11 @@ import TableRow from '@material-ui/core/TableRow'
 import TableSortLabel from '@material-ui/core/TableSortLabel'
 import { makeStyles } from '@material-ui/core/styles'
 import ChildCareIcon from '@material-ui/icons/ChildCare'
+import DeleteIcon from '@material-ui/icons/Delete'
+import EditIcon from '@material-ui/icons/Edit'
 
 import TopBar from '../components/TopBar'
-import { browseAllGuests, GuestApi } from '../services/guestApi'
+import { browseAllGuests, deleteGuest, GuestApi } from '../services/guestApi'
 import { UserContext } from '../services/UserContext'
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +30,10 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(2),
     marginLeft: theme.spacing(0.5),
   },
+  disabledRow: {
+    backgroundColor: theme.palette.grey[200],
+    opacity: 0.5,
+  },
 }))
 
 export default function GuestList() {
@@ -37,15 +44,7 @@ export default function GuestList() {
   const [sortIsAscending, setSortIsAscending] = React.useState<boolean>(true)
   const userContext = React.useContext(UserContext)
   React.useEffect(() => {
-    if (userContext.user) {
-      userContext.user.getIdToken()
-        .then(idToken => browseAllGuests(idToken))
-        .then((allGuests => {
-          setGuests(allGuests)
-          setLoading(false)
-        }))
-        .catch((err) => alert(err.message))
-    }
+    fetchGuests()
   }, [userContext.loading])
 
   const handleTableHeaderClick = (label: 'name' | 'date') => {
@@ -55,6 +54,31 @@ export default function GuestList() {
       setSortBy(label)
       setSortIsAscending(true)
     }
+  }
+
+  const fetchGuests = async (showLoading: boolean = true) => {
+    if (userContext.user) {
+      if (showLoading) {
+        setLoading(true)
+      }
+
+      try {
+        const idToken = await userContext.user.getIdToken()
+        const allGuests = await browseAllGuests(idToken)
+        setGuests(allGuests)
+      } catch (err) {
+        alert(err.message)
+      }
+
+      if (showLoading) {
+        setLoading(false)
+      }
+    }
+  }
+
+  const handleDeleteGuest = async (guest: GuestApi.Model) => {
+    await deleteGuest(guest.bookingEmail, guest.name)
+    fetchGuests(false)
   }
 
   const getSortedGuests = () => {
@@ -105,7 +129,7 @@ export default function GuestList() {
                       Name
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell onClick={() => alert('Clicked diet')}>Dietary requirements</TableCell>
+                  <TableCell>Dietary requirements</TableCell>
                   <TableCell sortDirection={sortBy === 'date' ? (sortIsAscending ? 'asc' : 'desc') : false}>
                     <TableSortLabel
                       active={sortBy === 'date'}
@@ -115,18 +139,17 @@ export default function GuestList() {
                       Date added
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
                 {getSortedGuests().map((guest: GuestApi.Model) => (
-                  <TableRow key={guest.name}>
-                    <TableCell component="th" scope="row">
-                      {guest.name}
-                      {guest.isChild && <ChildCareIcon className={classes.childIcon} />}
-                    </TableCell>
-                    <TableCell>{guest.dietaryRequirements}</TableCell>
-                    <TableCell>{guest.addedDate.toLocaleDateString()}</TableCell>
-                  </TableRow>
+                  <GuestRow
+                    key={guest.name}
+                    guest={guest}
+                    onDelete={handleDeleteGuest}
+                    onEdit={() => {}}
+                  />
                 ))}
               </TableBody>
             </Table>
@@ -135,4 +158,48 @@ export default function GuestList() {
       </Container>
     </React.Fragment>
   )
+}
+
+const GuestRow = (props: GuestList.GuestRow.Props) => {
+  const { guest, onDelete, onEdit } = props
+  const classes = useStyles()
+  const [disabled, setDisabled] = React.useState<boolean>(false)
+
+  const handleEdit = () => {
+    onEdit(guest)
+  }
+
+  const handleDelete = () => {
+    setDisabled(true)
+    onDelete(guest)
+  }
+
+  return (
+    <TableRow key={guest.name} className={disabled ? classes.disabledRow : ''}>
+      <TableCell component="th" scope="row">
+        {guest.name}
+        {guest.isChild && <ChildCareIcon className={classes.childIcon} />}
+      </TableCell>
+      <TableCell>{guest.dietaryRequirements}</TableCell>
+      <TableCell>{guest.addedDate.toLocaleDateString()}</TableCell>
+      <TableCell align="right">
+        <IconButton disabled={disabled} aria-label="edit" onClick={handleEdit}>
+          <EditIcon />
+        </IconButton>
+        <IconButton disabled={disabled} aria-label="delete" onClick={handleDelete}>
+          <DeleteIcon />
+        </IconButton>
+      </TableCell>
+    </TableRow>
+  )
+}
+
+export namespace GuestList {
+  export namespace GuestRow {
+    export interface Props {
+      guest: GuestApi.Model
+      onDelete: (guest: GuestApi.Model) => any
+      onEdit: (guest: GuestApi.Model) => any
+    }
+  }
 }
