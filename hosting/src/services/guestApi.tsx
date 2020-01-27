@@ -31,7 +31,10 @@ export const browseAllGuests = async (idToken: string): Promise<Array<GuestApi.M
   if (!response.ok) {
     throw new Error(responseBody.error || 'Failed to add guest(s)')
   }
-  return responseBody as Array<GuestApi.Model>
+  return responseBody.map((rawGuest: GuestApi.Model) => ({
+    ...rawGuest,
+    addedDate: new Date(rawGuest.addedDate),
+  })) as Array<GuestApi.Model>
 }
 
 export namespace GuestApi {
@@ -39,5 +42,6 @@ export namespace GuestApi {
     name: string,
     dietaryRequirements?: string,
     isChild: boolean,
+    addedDate: Date,
   }
 }
