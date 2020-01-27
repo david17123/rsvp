@@ -34,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.grey[200],
     opacity: 0.5,
   },
+  rowCell: {
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+  },
 }))
 
 export default function GuestList() {
@@ -120,7 +124,7 @@ export default function GuestList() {
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell sortDirection={sortBy === 'name' ? (sortIsAscending ? 'asc' : 'desc') : false}>
+                  <TableCell component="th" sortDirection={sortBy === 'name' ? (sortIsAscending ? 'asc' : 'desc') : false}>
                     <TableSortLabel
                       active={sortBy === 'name'}
                       direction={sortIsAscending ? 'asc' : 'desc'}
@@ -129,8 +133,8 @@ export default function GuestList() {
                       Name
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>Dietary requirements</TableCell>
-                  <TableCell sortDirection={sortBy === 'date' ? (sortIsAscending ? 'asc' : 'desc') : false}>
+                  <TableCell component="th">Dietary requirements</TableCell>
+                  <TableCell component="th" sortDirection={sortBy === 'date' ? (sortIsAscending ? 'asc' : 'desc') : false}>
                     <TableSortLabel
                       active={sortBy === 'date'}
                       direction={sortIsAscending ? 'asc' : 'desc'}
@@ -139,7 +143,7 @@ export default function GuestList() {
                       Date added
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell />
+                  <TableCell component="th" />
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -176,13 +180,13 @@ const GuestRow = (props: GuestList.GuestRow.Props) => {
 
   return (
     <TableRow key={guest.name} className={disabled ? classes.disabledRow : ''}>
-      <TableCell component="th" scope="row">
+      <TableCell className={classes.rowCell} scope="row">
         {guest.name}
         {guest.isChild && <ChildCareIcon className={classes.childIcon} />}
       </TableCell>
-      <TableCell>{guest.dietaryRequirements}</TableCell>
-      <TableCell>{guest.addedDate.toLocaleDateString()}</TableCell>
-      <TableCell align="right">
+      <TableCell className={classes.rowCell}>{guest.dietaryRequirements}</TableCell>
+      <TableCell className={classes.rowCell}>{guest.addedDate.toLocaleDateString()}</TableCell>
+      <TableCell className={classes.rowCell} align="right">
         <IconButton disabled aria-label="edit" onClick={handleEdit}>
           <EditIcon />
         </IconButton>
