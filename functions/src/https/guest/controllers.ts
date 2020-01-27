@@ -128,7 +128,7 @@ export const editGuest = async (req: ControllerTypes.EditGuest.Request, res: Res
     const { bookingEmail, name, update } = req.body;
     validateGuests([update]);
 
-    const guestCollection = db.collection('booking');
+    const guestCollection = db.collection('guest');
     const existingGuest = await guestCollection
       .where('bookingEmail', '==', bookingEmail)
       .where('name', '==', name)

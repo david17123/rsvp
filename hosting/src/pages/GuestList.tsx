@@ -11,6 +11,8 @@ import TableRow from '@material-ui/core/TableRow'
 import { makeStyles } from '@material-ui/core/styles'
 
 import TopBar from '../components/TopBar'
+import { browseAllGuests, GuestApi } from '../services/guestApi'
+import { UserContext } from '../services/UserContext'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -21,8 +23,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function GuestList() {
   const classes = useStyles({})
-
-  const rows: Array<any> = []
+  const [guests, setGuests] = React.useState<Array<GuestApi.Model>>([])
+  const userContext = React.useContext(UserContext)
+  React.useEffect(() => {
+    if (userContext.user) {
+      userContext.user.getIdToken()
+        .then(idToken => browseAllGuests(idToken))
+        .then((allGuests => setGuests(allGuests)))
+        .catch((err) => alert(err.message))
+    }
+  }, [userContext.loading])
 
   return (
     <React.Fragment>
@@ -35,17 +45,17 @@ export default function GuestList() {
               <TableRow>
                 <TableCell>Name</TableCell>
                 <TableCell>Dietary requirements</TableCell>
-                <TableCell>Notes</TableCell>
+                <TableCell>Is child</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map(row => (
-                <TableRow key={row.name}>
+              {guests.map((guest: GuestApi.Model) => (
+                <TableRow key={guest.name}>
                   <TableCell component="th" scope="row">
-                    {row.name}
+                    {guest.name}
                   </TableCell>
-                  <TableCell>{row.dietaryRequirements}</TableCell>
-                  <TableCell>{row.notes}</TableCell>
+                  <TableCell>{guest.dietaryRequirements}</TableCell>
+                  <TableCell>{guest.isChild ? 'Yes' : 'No'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

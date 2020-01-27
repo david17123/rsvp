@@ -18,6 +18,22 @@ export const addGuests = async (bookingEmail: string, guests: Array<GuestApi.Mod
   return responseBody
 }
 
+export const browseAllGuests = async (idToken: string): Promise<Array<GuestApi.Model>> => {
+  const response = await fetch(`${process.env.API_URL}/guest/browse/all`, {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'no-cache',
+    headers: {
+      'Authorization': `Bearer ${idToken}`,
+    },
+  })
+  const responseBody = await response.json()
+  if (!response.ok) {
+    throw new Error(responseBody.error || 'Failed to add guest(s)')
+  }
+  return responseBody as Array<GuestApi.Model>
+}
+
 export namespace GuestApi {
   export interface Model {
     name: string,

@@ -3,6 +3,7 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",
+    "watch": "tsc --watch",
     "serve": "firebase emulators:start",
     "serve:build": "yarn build && firebase emulators:start",
     "shell": "yarn build && firebase functions:shell",
