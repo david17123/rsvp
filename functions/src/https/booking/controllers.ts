@@ -124,8 +124,8 @@ export const deleteBooking = async (req: ControllerTypes.DeleteBooking.Request, 
     const guestsDeletePromises: Array<Promise<FirebaseFirestore.WriteResult>> = []
     const guestsToDeleteData: Array<FirebaseFirestore.DocumentData | undefined> = []
     existingGuests.forEach((existingGuest) => {
-      const guestId = existingGuest.id;
-      const existingGuestRef = guestCollection.doc(guestId);
+      const existingGuestId = existingGuest.id;
+      const existingGuestRef = guestCollection.doc(existingGuestId);
 
       const deletePromise = existingGuestRef.get()
         .then((snapshot) => {
