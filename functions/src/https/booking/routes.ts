@@ -6,6 +6,7 @@ import {
   browseBookings,
   addBooking,
   editBooking,
+  deleteBooking,
 } from './controllers';
 import loggedInMiddleware from '../middlewares/loggedIn';
 
@@ -17,5 +18,6 @@ app.get('/', readBooking);
 app.get('/browse', loggedInMiddleware, browseBookings);
 app.post('/', addBooking);
 app.put('/', editBooking);
+app.delete('/', loggedInMiddleware, deleteBooking);
 
 export default app;

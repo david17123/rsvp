@@ -36,3 +36,12 @@ export namespace EditBooking {
     },
   }
 }
+
+export namespace DeleteBooking {
+  export interface Request extends ExpressRequest {
+    params: {},
+    body: {
+      email: string,
+    },
+  }
+}

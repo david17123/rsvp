@@ -93,3 +93,60 @@ export const editBooking = async (req: ControllerTypes.EditBooking.Request, res:
     });
   }
 };
+
+export const deleteBooking = async (req: ControllerTypes.DeleteBooking.Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    // Delete booking
+    const bookingCollection = db.collection('booking');
+    const existingBooking = await bookingCollection
+      .where('email', '==', email)
+      .get();
+    if (existingBooking.size !== 1) {
+      throw new Error('Cannot find booking');
+    }
+
+    const guestId = existingBooking.docs[0].id;
+    const existingBookingRef = bookingCollection.doc(guestId);
+    const bookingToDeleteData = (await existingBookingRef.get()).data();
+    await existingBookingRef.delete();
+
+    // Delete corresponding guests
+    const guestCollection = db.collection('guest');
+    const existingGuests = await guestCollection
+      .where('bookingEmail', '==', email)
+      .get();
+    if (existingGuests.size === 0) {
+      throw new Error('Cannot find guests');
+    }
+
+    const guestsDeletePromises: Array<Promise<FirebaseFirestore.WriteResult>> = []
+    const guestsToDeleteData: Array<FirebaseFirestore.DocumentData | undefined> = []
+    existingGuests.forEach((existingGuest) => {
+      const guestId = existingGuest.id;
+      const existingGuestRef = guestCollection.doc(guestId);
+
+      const deletePromise = existingGuestRef.get()
+        .then((snapshot) => {
+          guestsToDeleteData.push(snapshot.data());
+          return existingGuestRef.delete();
+        });
+
+      guestsDeletePromises.push(deletePromise);
+    });
+    await Promise.all(guestsDeletePromises);
+
+    // Return response
+    res.json({
+      booking: bookingToDeleteData,
+      guests: guestsToDeleteData,
+    });
+  } catch (e) {
+    console.error(e);
+    res.statusCode = 500;
+    res.json({
+      error: e.message
+    });
+  }
+};
