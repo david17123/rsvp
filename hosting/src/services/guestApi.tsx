@@ -29,7 +29,7 @@ export const browseAllGuests = async (idToken: string): Promise<Array<GuestApi.M
   })
   const responseBody = await response.json()
   if (!response.ok) {
-    throw new Error(responseBody.error || 'Failed to add guest(s)')
+    throw new Error(responseBody.error || 'Failed to browse guest(s)')
   }
   return responseBody.map((rawGuest: GuestApi.Model) => ({
     ...rawGuest,

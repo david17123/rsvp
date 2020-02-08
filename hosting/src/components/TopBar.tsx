@@ -81,7 +81,11 @@ const TopBar: FunctionComponent<TopBar.Props> = (props) => {
               <ListItemIcon><PeopleIcon /></ListItemIcon>
               <ListItemText primary="Guests" />
             </ListItem>
-            <ListItem button>
+            <ListItem
+              button
+              selected={props.location.pathname === routePaths.ADMIN_BOOKING_LIST}
+              component={renderRouterLink(routePaths.ADMIN_BOOKING_LIST)}
+            >
               <ListItemIcon><AssignmentIcon /></ListItemIcon>
               <ListItemText primary="Bookings" />
             </ListItem>

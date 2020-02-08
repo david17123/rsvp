@@ -14,13 +14,15 @@ import Rsvp from './pages/Rsvp'
 import ThankYou from './pages/ThankYou'
 import AdminLogin from './pages/AdminLogin'
 import GuestList from './pages/GuestList'
+import BookingList from './pages/BookingList'
 
 export const routePaths = {
   HOME: '/',
   RSVP: '/rsvp',
   THANK_YOU: '/thankyou',
   ADMIN_LOGIN: '/admin',
-  ADMIN_GUEST_LIST: '/admin/guest'
+  ADMIN_GUEST_LIST: '/admin/guest',
+  ADMIN_BOOKING_LIST: '/admin/booking',
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +44,7 @@ export default function Routes() {
           <Route path={routePaths.THANK_YOU} component={ThankYou} />
           <Route exact path={routePaths.ADMIN_LOGIN} component={AdminLogin} />
           <Route exact path={routePaths.ADMIN_GUEST_LIST} component={loggedInHoc(GuestList)} />
+          <Route exact path={routePaths.ADMIN_BOOKING_LIST} component={loggedInHoc(BookingList)} />
         </Switch>
       </Router>
     </div>
