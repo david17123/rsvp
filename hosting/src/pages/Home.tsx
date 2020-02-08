@@ -1,10 +1,13 @@
 import React from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
+
+import { routePaths } from '../Routes'
 
 const TopLeftImage = require('../assets/home_top_left.svg').default as string;
 const BottomRightImage = require('../assets/home_bottom_right.svg').default as string;
@@ -63,7 +66,12 @@ export default function Home() {
           <Typography className={classes.title} variant="h4" component="h1">David &amp; Anne</Typography>
           <Typography className={classes.date} variant="body1">23.05.2020</Typography>
           <div>
-            <Button variant="outlined" color="primary" href="/rsvp">Confirm RSVP</Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              component={RouterLink}
+              to={routePaths.RSVP}
+            >Confirm RSVP</Button>
           </div>
         </Box>
       </Container>
