@@ -153,6 +153,7 @@ export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
             onChange={(event) => handleGuestChange({ name: event.target.value }, i)}
             error={errors.familyMembers && errors.familyMembers.length >= i && !!errors.familyMembers[i - 1].name}
             helperText={errors.familyMembers && errors.familyMembers.length >= i && errors.familyMembers[i - 1].name}
+            disabled={props.disabled}
           />
           <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
           <TextField
@@ -164,11 +165,13 @@ export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
             rows={3}
             value={props.guests.length >= i + 1 && props.guests[i].dietaryRequirements ? props.guests[i].dietaryRequirements : ''}
             onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, i)}
+            disabled={props.disabled}
           />
           <FormControl
             component="fieldset"
             error={!!errors.familyMembers && errors.familyMembers.length >= i && !!errors.familyMembers[i - 1].isChild}
             required
+            disabled={props.disabled}
           >
             <FormLabel className={classes.formLabel}>Is this family member under 7 yo?</FormLabel>
             {!!errors.familyMembers && errors.familyMembers.length >= i && !!errors.familyMembers[i - 1].isChild && (
@@ -202,6 +205,7 @@ export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
           error={!!errors.name}
           helperText={errors.name}
           required
+          disabled={props.disabled}
         />
         <TextField
           className={classes.textFields}
@@ -213,6 +217,7 @@ export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
           error={!!errors.email}
           helperText={errors.email}
           required
+          disabled={props.disabled}
         />
         <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
         <TextField
@@ -224,6 +229,7 @@ export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
           rows={3}
           value={props.guests.length > 0 ? props.guests[0].dietaryRequirements : ''}
           onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, 0)}
+          disabled={true}
         />
 
         <FormLabel className={classes.formLabel}>You are a family of&hellip;</FormLabel>
@@ -232,6 +238,7 @@ export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
             id="family-of"
             value={familyOf}
             onChange={(event) => handleFamilyOfChange(event.target.value as number)}
+            disabled={props.disabled}
           >
             <MenuItem value={1}>
               <em>None</em>
@@ -251,6 +258,7 @@ export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
         color="primary"
         disableElevation
         onClick={handleSubmit}
+        disabled={props.disabled}
       >
         All done!
       </Button>
@@ -263,6 +271,7 @@ export namespace FamilyBookingForm {
     onBookingChange: (val: Partial<BookingApi.Model>) => any,
     onGuestsChange: (val: Array<Partial<GuestApi.Model>>) => any,
     onSubmit: () => any,
+    disabled: boolean,
     booking: Partial<BookingApi.Model>,
     /** First element of guests array is always assumed to be the person making the booking */
     guests: Array<Partial<GuestApi.Model>>,

@@ -130,6 +130,7 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
           error={!!errors.name}
           helperText={errors.name}
           required
+          disabled={props.disabled}
         />
         <TextField
           className={classes.textFields}
@@ -141,6 +142,7 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
           error={!!errors.email}
           helperText={errors.email}
           required
+          disabled={props.disabled}
         />
         <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
         <TextField
@@ -152,11 +154,13 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
           rows={3}
           value={props.guests.length > 0 ? props.guests[0].dietaryRequirements : ''}
           onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, 0)}
+          disabled={props.disabled}
         />
         <FormControl
           component="fieldset"
           error={!!errors.hasPlusOne}
           required
+          disabled={props.disabled}
         >
           <FormLabel className={classes.formLabel}>Will you be inviting a +1?</FormLabel>
           {!!errors.hasPlusOne && <FormHelperText error>{errors.hasPlusOne}</FormHelperText>}
@@ -179,6 +183,7 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
             onChange={(event) => handleGuestChange({ name: event.target.value }, 1)}
             error={errors.plusOne && !!errors.plusOne.name}
             helperText={errors.plusOne && errors.plusOne.name}
+            disabled={props.disabled}
           />
           <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
           <TextField
@@ -190,6 +195,7 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
             rows={3}
             value={props.guests.length >= 2 && props.guests[1].dietaryRequirements ? props.guests[1].dietaryRequirements : ''}
             onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, 1)}
+            disabled={props.disabled}
           />
         </Box>
       )}
@@ -199,6 +205,7 @@ export default function IndividualBookingForm(props: IndividualBookingForm.Props
         color="primary"
         disableElevation
         onClick={handleSubmit}
+        disabled={props.disabled}
       >
         All done!
       </Button>
@@ -211,6 +218,7 @@ export namespace IndividualBookingForm {
     onBookingChange: (val: Partial<BookingApi.Model>) => any,
     onGuestsChange: (val: Array<Partial<GuestApi.Model>>) => any,
     onSubmit: () => any,
+    disabled: boolean,
     booking: Partial<BookingApi.Model>,
     /** First element of guests array is always assumed to be the person making the booking */
     guests: Array<Partial<GuestApi.Model>>,

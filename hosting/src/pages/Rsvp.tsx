@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Rsvp(props: RouteComponentProps) {
   const classes = useStyles()
+  const [isSubmitting, setSubmitting] = React.useState<boolean>(false)
   const [booking, setBooking] = React.useState<Partial<BookingApi.Model>>({ bookingDate: new Date() })
   const [guests, setGuests] = React.useState<Array<Partial<GuestApi.Model>>>([])
   const [showForm, setShowForm] = React.useState<boolean>(false)
@@ -76,6 +77,7 @@ export default function Rsvp(props: RouteComponentProps) {
   }
 
   const handleFormSubmit = async () => {
+    setSubmitting(true)
     try {
       const bookingToSubmit: BookingApi.Model = booking as BookingApi.Model
       const guestsToSubmit: Array<GuestApi.Model> = guests as Array<GuestApi.Model>
@@ -87,6 +89,7 @@ export default function Rsvp(props: RouteComponentProps) {
       alert(`Error: ${e.message}`)
       console.error(e)
     }
+    setSubmitting(false)
   }
 
   return (
@@ -109,6 +112,7 @@ export default function Rsvp(props: RouteComponentProps) {
               </Button>
             </div>
             <IndividualBookingForm
+              disabled={isSubmitting}
               booking={booking}
               guests={guests}
               onBookingChange={(val) => updateBooking(val)}
@@ -126,6 +130,7 @@ export default function Rsvp(props: RouteComponentProps) {
               </Button>
             </div>
             <FamilyBookingForm
+              disabled={isSubmitting}
               booking={booking}
               guests={guests}
               onBookingChange={(val) => updateBooking(val)}
