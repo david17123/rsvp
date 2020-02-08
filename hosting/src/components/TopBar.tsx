@@ -1,4 +1,10 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
+import {
+  withRouter,
+  RouteComponentProps,
+  Link as RouterLink,
+  LinkProps as RouterLinkProps,
+} from 'react-router-dom'
 
 import AppBar from '@material-ui/core/AppBar'
 import Box from '@material-ui/core/Box'
@@ -17,6 +23,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import PeopleIcon from '@material-ui/icons/People'
 
 import { logout } from '../services/login'
+import { routePaths } from '../Routes'
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: (props: TopBar.Props) => ({
@@ -31,9 +38,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   }),
 )
 
-export default function TopBar(props: TopBar.Props) {
+const TopBar: FunctionComponent<TopBar.Props> = (props) => {
   const classes = useStyles(props)
   const [drawerOpen, setDrawerOpen] = React.useState(false)
+
+  const renderRouterLink = (to: string): FunctionComponent => {
+    return React.forwardRef<any, Omit<RouterLinkProps, 'to'>>((itemProps, ref) => {
+      return <RouterLink to={to} ref={ref} {...itemProps} />
+    })
+  }
 
   return (
     <React.Fragment>
@@ -60,7 +73,11 @@ export default function TopBar(props: TopBar.Props) {
           role="presentation"
         >
           <List>
-            <ListItem button>
+            <ListItem
+              button
+              selected={props.location.pathname === routePaths.ADMIN_GUEST_LIST}
+              component={renderRouterLink(routePaths.ADMIN_GUEST_LIST)}
+            >
               <ListItemIcon><PeopleIcon /></ListItemIcon>
               <ListItemText primary="Guests" />
             </ListItem>
@@ -75,8 +92,11 @@ export default function TopBar(props: TopBar.Props) {
   )
 }
 
+export default withRouter(TopBar)
+
 export namespace TopBar {
-  export interface Props {
+  export interface OwnProps {
     noSpacing?: boolean,
   }
+  export type Props = OwnProps & RouteComponentProps
 }
