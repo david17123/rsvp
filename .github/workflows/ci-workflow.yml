@@ -9,10 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy website hosting
+        uses: actions/checkout@v2
         run: cd hosting && yarn deploy
   deploy-functions:
     name: Deploy functions to Firebase
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Firebase functions
+        uses: actions/checkout@v2
         run: cd functions && yarn deploy
