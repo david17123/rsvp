@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '10.x'
       - name: Install Firebase
-        run: curl -sL https://firebase.tools | bash
+        run: npm install -g firebase-tools
       - name: Deploy website hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: '10.x'
       - name: Install Firebase
-        run: curl -sL https://firebase.tools | bash
+        run: npm install -g firebase-tools
       - name: Deploy Firebase functions
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
