@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server",
-    "deploy": "yarn build && firebase deploy --only hosting"
+    "deploy": "yarn build --mode=production && firebase deploy --only hosting"
   },
   "license": "MIT",
   "dependencies": {
