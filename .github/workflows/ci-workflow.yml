@@ -1,0 +1,18 @@
+name: deploy-prod
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy-hosting:
+    name: Deploy hosting to Firebase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy website hosting
+        run: cd hosting && yarn deploy
+  deploy-functions:
+    name: Deploy functions to Firebase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Firebase functions
+        run: cd functions && yarn deploy
