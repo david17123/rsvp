@@ -11,7 +11,7 @@ jobs:
       - name: Checkout codebase
         uses: actions/checkout@v2
       - name: Deploy website hosting
-        run: cd hosting && yarn deploy
+        run: cd hosting && yarn && yarn deploy
   deploy-functions:
     name: Deploy functions to Firebase
     runs-on: ubuntu-latest
@@ -19,4 +19,4 @@ jobs:
       - name: Checkout codebase
         uses: actions/checkout@v2
       - name: Deploy Firebase functions
-        run: cd functions && yarn deploy
+        run: cd functions && yarn && yarn deploy
