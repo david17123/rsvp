@@ -10,7 +10,15 @@ jobs:
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - name: Install Firebase
+        run: curl -sL https://firebase.tools | bash
       - name: Deploy website hosting
+        env:
+          - FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: cd hosting && yarn && yarn deploy
   deploy-functions:
     name: Deploy functions to Firebase
@@ -18,5 +26,13 @@ jobs:
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - name: Install Firebase
+        run: curl -sL https://firebase.tools | bash
       - name: Deploy Firebase functions
+        env:
+          - FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: cd functions && yarn && yarn deploy
