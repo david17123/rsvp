@@ -20,7 +20,12 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-        run: cd hosting && yarn && yarn deploy
+        run: |
+          cd hosting
+          echo "FIREBASE_API_KEY=${FIREBASE_API_KEY}" >> .env
+          echo "API_URL=https://us-central1-wedding-rsvp-64bcd.cloudfunctions.net" >> .env
+          yarn
+          yarn deploy
   deploy-functions:
     name: Deploy functions to Firebase
     runs-on: ubuntu-latest
