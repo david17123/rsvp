@@ -5,6 +5,9 @@ export default class Mailer {
   static _instance: Mailer | null = null;
   private sendInBlue: SendInBlue;
 
+  static NEWSLETTER_UPDATES_LIST_ID = 3;
+  static RSVP_GUESTS_LIST_ID = 4;
+
   static getInstance() {
     if (!Mailer._instance) {
       Mailer._instance = new Mailer();
@@ -30,4 +33,6 @@ export default class Mailer {
     // Might want to log to logging tool like Sentry
     console.log(messageId);
   }
+
+  // async createContact()
 }
