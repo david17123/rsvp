@@ -34,5 +34,18 @@ export default class Mailer {
     console.log(messageId);
   }
 
-  // async createContact()
+  async createOrUpdateContact(email: string, firstName: string, lastName: string) {
+    await this.sendInBlue.ContactsApi.createContact({
+      email,
+      attributes: {
+        FIRSTNAME: firstName,
+        LASTNAME: lastName,
+      },
+      listIds: [ Mailer.NEWSLETTER_UPDATES_LIST_ID, Mailer.RSVP_GUESTS_LIST_ID ],
+      updateEnabled: true,
+    });
+
+    // Might want to log to logging tool like Sentry
+    console.log('Added person to Email Campaign platform');
+  }
 }
