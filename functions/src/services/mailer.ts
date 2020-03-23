@@ -34,16 +34,22 @@ export default class Mailer {
     console.log(messageId);
   }
 
-  async createOrUpdateContact(email: string, firstName: string, lastName: string) {
-    await this.sendInBlue.ContactsApi.createContact({
+  async createOrUpdateContact(email: string, firstName: string, lastName: string, listIds: Array<number> = []) {
+    const createContactData = {
       email,
       attributes: {
         FIRSTNAME: firstName,
         LASTNAME: lastName,
       },
-      listIds: [ Mailer.NEWSLETTER_UPDATES_LIST_ID, Mailer.RSVP_GUESTS_LIST_ID ],
+      listIds,
       updateEnabled: true,
-    });
+    };
+
+    if (listIds.length === 0) {
+      delete(createContactData.listIds);
+    }
+
+    await this.sendInBlue.ContactsApi.createContact(createContactData);
 
     // Might want to log to logging tool like Sentry
     console.log('Added person to Email Campaign platform');
