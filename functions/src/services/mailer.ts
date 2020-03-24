@@ -7,6 +7,7 @@ export default class Mailer {
 
   static NEWSLETTER_UPDATES_LIST_ID = 3;
   static RSVP_GUESTS_LIST_ID = 4;
+  static NEWSLETTER_WELCOME_TEMPLATE_ID = 3;
 
   static getInstance() {
     if (!Mailer._instance) {
@@ -34,7 +35,7 @@ export default class Mailer {
     console.log(messageId);
   }
 
-  async createOrUpdateContact(email: string, firstName: string, lastName: string, listIds: Array<number> = []) {
+  async createOrUpdateContact(email: string, firstName: string = '', lastName: string = '', listIds: Array<number> = []) {
     const createContactData = {
       email,
       attributes: {
@@ -47,6 +48,9 @@ export default class Mailer {
 
     if (listIds.length === 0) {
       delete(createContactData.listIds);
+    }
+    if (!firstName) {
+      delete(createContactData.attributes);
     }
 
     await this.sendInBlue.ContactsApi.createContact(createContactData);
