@@ -9,7 +9,7 @@ export const addSubscription = async (req: ControllerTypes.AddSubscription.Reque
     const mailer = new Mailer();
 
     await mailer.createOrUpdateContact(email);
-    mailer.sendEmailTemplate(Mailer.NEWSLETTER_WELCOME_TEMPLATE_ID, {}, email);
+    await mailer.sendEmailTemplate(Mailer.NEWSLETTER_WELCOME_TEMPLATE_ID, {}, email);
 
     res.json({ success: true });
   } catch (e) {
