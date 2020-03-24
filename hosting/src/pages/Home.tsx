@@ -7,6 +7,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
+import { addSubscription } from '../services/subscriptionApi'
+import { isValidEmail } from '../utils'
+
 const TopLeftImage = require('../assets/home_top_left.svg').default as string;
 const BottomRightImage = require('../assets/home_bottom_right.svg').default as string;
 const RingImage = require('../assets/ring_icon.svg').default as string;
@@ -80,20 +83,27 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
   const classes = useStyles()
 
+  const [email, setEmail] = React.useState('')
+  const [errorMessage, setErrorMessage] = React.useState('')
   const [hasSavedEmail, setHasSavedEmail] = React.useState(false)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
 
   const handleSubmitEmailForm = async (event: React.SyntheticEvent) => {
-    event.preventDefault();
+    event.preventDefault()
+    setIsSubmitting(true)
 
-    setIsSubmitting(true);
+    if (!isValidEmail(email)) {
+      setErrorMessage('Email does not look right')
+    } else {
+      try {
+        await addSubscription(email)
+        setHasSavedEmail(true)
+      } catch (e) {
+        setErrorMessage('Failed to subscribe. Please try again later.')
+      }
+    }
 
-    // TODO: Add contact to SendInBlue
-    // TODO: Send welcome email
-    await new Promise((resolve) => setTimeout(() => resolve(), 1000)); // TODO Remove this placeholder
-
-    setIsSubmitting(false);
-    setHasSavedEmail(true);
+    setIsSubmitting(false)
   }
 
   return (
@@ -121,7 +131,11 @@ export default function Home() {
                 InputProps={{
                   classes: { input: classes.emailTextField },
                 }}
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
                 disabled={isSubmitting}
+                error={!!errorMessage}
+                helperText={errorMessage}
               />
               <Button
                 variant="contained"
