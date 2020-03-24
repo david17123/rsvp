@@ -20,16 +20,20 @@ export default class Mailer {
     this.sendInBlue = new SendInBlue(config.sendinblue.key);
   }
 
-  async sendEmailTemplate(templateId: number, templateData: {[key: string]: any}, email: string, name?: string): Promise<void> {
+  async sendEmailTemplate(templateId: number, templateData: {[key: string]: any} | null, email: string, name?: string): Promise<void> {
     const target: SmtpApiTypes.SendEmailTo = { email };
     if (name) {
       target.name = name;
     }
-    const { messageId } = await this.sendInBlue.SmtpApi.sendTransacEmail({
+    const sendTransacEmailParams: SmtpApiTypes.SendTransacEmailParams = {
       to: [ target ],
       templateId: templateId,
-      params: templateData,
-    });
+    };
+    if (templateData) {
+      sendTransacEmailParams.params = templateData;
+    }
+
+    const { messageId } = await this.sendInBlue.SmtpApi.sendTransacEmail(sendTransacEmailParams);
 
     // Might want to log to logging tool like Sentry
     console.log(messageId);
@@ -48,9 +52,6 @@ export default class Mailer {
 
     if (listIds.length === 0) {
       delete(createContactData.listIds);
-    }
-    if (!firstName) {
-      delete(createContactData.attributes);
     }
 
     await this.sendInBlue.ContactsApi.createContact(createContactData);
