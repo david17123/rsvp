@@ -16,7 +16,7 @@ export const addSubscription = async (req: ControllerTypes.AddSubscriptionReques
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }

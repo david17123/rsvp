@@ -25,7 +25,7 @@ export const browseBookings = async (idToken: string): Promise<Array<BookingApiM
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      'Authorization': `Bearer ${idToken}`,
+      Authorization: `Bearer ${idToken}`,
     },
   })
   const responseBody = await response.json()
@@ -45,7 +45,7 @@ export const deleteBooking = async (idToken: string, email: string): Promise<Boo
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${idToken}`,
+      Authorization: `Bearer ${idToken}`,
     },
     body: JSON.stringify({
       email,

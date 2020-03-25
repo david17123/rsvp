@@ -29,7 +29,7 @@ export default class ApiBase {
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': bodyPayload.length,
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'api-key': this.apiKey,
           ...headers,
         },

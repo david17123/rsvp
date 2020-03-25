@@ -47,7 +47,7 @@ const customTheme = createMuiTheme({
       root: {
         display: 'block',
         textAlign: 'left',
-      }
+      },
     },
     MuiFormControlLabel: {
       label: {

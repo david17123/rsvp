@@ -19,7 +19,7 @@ export const readBooking = async (req: ControllerTypes.ReadBookingRequest, res: 
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }
@@ -38,7 +38,7 @@ export const browseBookings = async (req: ControllerTypes.BrowseBookingRequest, 
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }
@@ -65,7 +65,7 @@ export const addBooking = async (req: ControllerTypes.AddBookingRequest, res: Re
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }
@@ -89,7 +89,7 @@ export const editBooking = async (req: ControllerTypes.EditBookingRequest, res: 
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }
@@ -146,7 +146,7 @@ export const deleteBooking = async (req: ControllerTypes.DeleteBookingRequest, r
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }
