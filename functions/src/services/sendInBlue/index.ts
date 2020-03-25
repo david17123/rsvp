@@ -1,7 +1,7 @@
-import SmtpApi from './smtpApi';
-import * as SmtpApiTypes from './smtpApiTypes';
-import ContactsApi from './contactsApi';
-import * as ContactsApiTypes from './contactsApiTypes';
+import SmtpApi from './smtpApi'
+import * as SmtpApiTypes from './smtpApiTypes'
+import ContactsApi from './contactsApi'
+import * as ContactsApiTypes from './contactsApiTypes'
 
 /**
  * A simple (partial) wrapper to the SendInBlue Rest API endpoints. The wrapper
@@ -9,18 +9,18 @@ import * as ContactsApiTypes from './contactsApiTypes';
  * to be handled properly.
  */
 export default class SendInBlue {
-  public SmtpApi: SmtpApi;
-  public ContactsApi: ContactsApi;
+  public SmtpApi: SmtpApi
+  public ContactsApi: ContactsApi
 
   constructor(apiKey: string) {
-    this.SmtpApi = new SmtpApi('');
-    this.ContactsApi = new ContactsApi('');
-    this.setApiKey(apiKey);
+    this.SmtpApi = new SmtpApi('')
+    this.ContactsApi = new ContactsApi('')
+    this.setApiKey(apiKey)
   }
 
   public setApiKey(apiKey: string) {
-    this.SmtpApi.setApiKey(apiKey);
-    this.ContactsApi.setApiKey(apiKey);
+    this.SmtpApi.setApiKey(apiKey)
+    this.ContactsApi.setApiKey(apiKey)
   }
 }
 
@@ -29,4 +29,4 @@ export {
   SmtpApiTypes,
   ContactsApi,
   ContactsApiTypes,
-};
+}

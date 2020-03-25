@@ -1,0 +1,36 @@
+name: code-lint
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  ts-lint-functions:
+    name: Run TS linter on functions codebase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - name: Run TS lint
+        run: |
+          cd functions
+          yarn
+          yarn lint
+  ts-lint-hosting:
+    name: Run TS linter on hosting codebase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - name: Run TS lint
+        run: |
+          cd hosting
+          yarn
+          yarn lint

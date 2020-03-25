@@ -17,7 +17,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 
 import TopBar from '../components/TopBar'
-import { browseBookings, deleteBooking, BookingApi } from '../services/bookingApi'
+import { browseBookings, deleteBooking, BookingApiModel } from '../services/bookingApi'
 import { UserContext } from '../services/UserContext'
 
 const useStyles = makeStyles((theme) => ({
@@ -41,13 +41,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BookingList() {
   const classes = useStyles({})
-  const [bookings, setBookings] = React.useState<Array<BookingApi.Model>>([])
+  const [bookings, setBookings] = React.useState<Array<BookingApiModel>>([])
   const [loading, setLoading] = React.useState<boolean>(true)
   const [sortBy, setSortBy] = React.useState<'name' | 'email' | 'date'>('name')
   const [sortIsAscending, setSortIsAscending] = React.useState<boolean>(true)
   const userContext = React.useContext(UserContext)
   React.useEffect(() => {
-    fetchBookings()
+    fetchBookings() // tslint:disable-line no-floating-promises
   }, [userContext.loading])
 
   const handleTableHeaderClick = (label: 'name' | 'email' | 'date') => {
@@ -79,12 +79,12 @@ export default function BookingList() {
     }
   }
 
-  const handleDeleteBooking = async (booking: BookingApi.Model) => {
+  const handleDeleteBooking = async (booking: BookingApiModel) => {
     if (userContext.user) {
       try {
         const idToken = await userContext.user.getIdToken()
         await deleteBooking(idToken, booking.email)
-        fetchBookings(false)
+        await fetchBookings(false)
       } catch (err) {
         alert(err.message)
       }
@@ -168,12 +168,12 @@ export default function BookingList() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {getSortedBookings().map((booking: BookingApi.Model) => (
+                {getSortedBookings().map((booking: BookingApiModel) => (
                   <BookingRow
                     key={booking.email}
                     booking={booking}
                     onDelete={handleDeleteBooking}
-                    onEdit={() => {}}
+                    onEdit={() => { console.log('Edit handler placeholder') }}
                   />
                 ))}
               </TableBody>
@@ -185,7 +185,7 @@ export default function BookingList() {
   )
 }
 
-const BookingRow = (props: BookingList.BookingRow.Props) => {
+const BookingRow = (props: BookingRowProps) => {
   const { booking, onDelete, onEdit } = props
   const classes = useStyles()
   const [disabled, setDisabled] = React.useState<boolean>(false)
@@ -217,12 +217,8 @@ const BookingRow = (props: BookingList.BookingRow.Props) => {
   )
 }
 
-export namespace BookingList {
-  export namespace BookingRow {
-    export interface Props {
-      booking: BookingApi.Model
-      onDelete: (booking: BookingApi.Model) => any
-      onEdit: (booking: BookingApi.Model) => any
-    }
-  }
+export interface BookingRowProps {
+  booking: BookingApiModel
+  onDelete: (booking: BookingApiModel) => any
+  onEdit: (booking: BookingApiModel) => any
 }

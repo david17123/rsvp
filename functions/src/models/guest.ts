@@ -4,10 +4,10 @@ export interface Guest {
   dietaryRequirements: string,
   isChild: boolean,
   addedDate: string,
-};
+}
 
 export interface GuestUpdate {
   name: string,
   dietaryRequirements: string,
   isChild: boolean,
-};
+}

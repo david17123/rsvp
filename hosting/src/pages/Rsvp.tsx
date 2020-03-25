@@ -9,14 +9,14 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import BookingTypeForm from '../components/BookingTypeForm'
 import FamilyBookingForm from '../components/FamilyBookingForm'
 import IndividualBookingForm from '../components/IndividualBookingForm'
-import { BookingApi, addBooking } from '../services/bookingApi'
-import { GuestApi, addGuests } from '../services/guestApi'
+import { BookingApiModel, BookingTypeEnum, addBooking } from '../services/bookingApi'
+import { GuestApiModel, addGuests } from '../services/guestApi'
 import { deepMerge } from '../utils'
 import { routePaths } from '../Routes'
 
-const TopLeftImage = require('../assets/secondary_top_left.svg').default as string;
-const BottomRightImage = require('../assets/secondary_bottom_right.svg').default as string;
-const RingImage = require('../assets/ring_icon.svg').default as string;
+const TopLeftImage = require('../assets/secondary_top_left.svg').default as string
+const BottomRightImage = require('../assets/secondary_bottom_right.svg').default as string
+const RingImage = require('../assets/ring_icon.svg').default as string
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -63,15 +63,15 @@ const useStyles = makeStyles((theme) => ({
 export default function Rsvp(props: RouteComponentProps) {
   const classes = useStyles()
   const [isSubmitting, setSubmitting] = React.useState<boolean>(false)
-  const [booking, setBooking] = React.useState<Partial<BookingApi.Model>>({ bookingDate: new Date() })
-  const [guests, setGuests] = React.useState<Array<Partial<GuestApi.Model>>>([])
+  const [booking, setBooking] = React.useState<Partial<BookingApiModel>>({ bookingDate: new Date() })
+  const [guests, setGuests] = React.useState<Array<Partial<GuestApiModel>>>([])
   const [showForm, setShowForm] = React.useState<boolean>(false)
 
-  const updateBooking = (updateObject: Partial<BookingApi.Model>) => {
+  const updateBooking = (updateObject: Partial<BookingApiModel>) => {
     setBooking(deepMerge({ ...booking }, updateObject))
   }
 
-  const handleSetBookingType = (val: BookingApi.BookingTypeEnum) => {
+  const handleSetBookingType = (val: BookingTypeEnum) => {
     updateBooking({ type: val })
     setShowForm(true)
   }
@@ -79,8 +79,8 @@ export default function Rsvp(props: RouteComponentProps) {
   const handleFormSubmit = async () => {
     setSubmitting(true)
     try {
-      const bookingToSubmit: BookingApi.Model = booking as BookingApi.Model
-      const guestsToSubmit: Array<GuestApi.Model> = guests as Array<GuestApi.Model>
+      const bookingToSubmit: BookingApiModel = booking as BookingApiModel
+      const guestsToSubmit: Array<GuestApiModel> = guests as Array<GuestApiModel>
       await addBooking(bookingToSubmit)
       await addGuests(bookingToSubmit.email, guestsToSubmit)
       props.history.push(routePaths.THANK_YOU)
@@ -103,7 +103,7 @@ export default function Rsvp(props: RouteComponentProps) {
         {(!showForm || !booking.type) && (
           <BookingTypeForm onSelect={(val) => handleSetBookingType(val)} />
         )}
-        {showForm && booking.type && booking.type === BookingApi.BookingTypeEnum.INDIVIDUAL && (
+        {showForm && booking.type && booking.type === BookingTypeEnum.INDIVIDUAL && (
           <React.Fragment>
             <div className={classes.formHeader}>
               <Button color="primary" className={classes.backButton} onClick={() => setShowForm(false)}>
@@ -121,7 +121,7 @@ export default function Rsvp(props: RouteComponentProps) {
             />
           </React.Fragment>
         )}
-        {showForm && booking.type && booking.type === BookingApi.BookingTypeEnum.FAMILY && (
+        {showForm && booking.type && booking.type === BookingTypeEnum.FAMILY && (
           <React.Fragment>
             <div className={classes.formHeader}>
               <Button color="primary" className={classes.backButton} onClick={() => setShowForm(false)}>

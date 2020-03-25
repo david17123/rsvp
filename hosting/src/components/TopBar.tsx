@@ -26,7 +26,7 @@ import { logout } from '../services/login'
 import { routePaths } from '../Routes'
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root: (props: TopBar.Props) => ({
+    root: (props: TopBarProps) => ({
       marginBottom: props.noSpacing ? 0 : theme.spacing(3),
     }),
     menuButton: {
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   }),
 )
 
-const TopBar: FunctionComponent<TopBar.Props> = (props) => {
+const TopBar: FunctionComponent<TopBarProps> = (props) => {
   const classes = useStyles(props)
   const [drawerOpen, setDrawerOpen] = React.useState(false)
 
@@ -98,9 +98,8 @@ const TopBar: FunctionComponent<TopBar.Props> = (props) => {
 
 export default withRouter(TopBar)
 
-export namespace TopBar {
-  export interface OwnProps {
-    noSpacing?: boolean,
-  }
-  export type Props = OwnProps & RouteComponentProps
+export type TopBarProps = OwnProps & RouteComponentProps
+
+interface OwnProps {
+  noSpacing?: boolean,
 }

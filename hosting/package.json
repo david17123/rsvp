@@ -4,6 +4,8 @@
   "author": "David <david_andika17123@hotmail.com>",
   "main": "src/index.ts",
   "scripts": {
+    "lint": "tslint --project tsconfig.json",
+    "lint:fix": "tslint --project tsconfig.json --fix",
     "build": "webpack",
     "start": "webpack-dev-server",
     "deploy": "yarn build --mode=production && firebase deploy --only hosting"

@@ -10,9 +10,9 @@ import Typography from '@material-ui/core/Typography'
 import { addSubscription } from '../services/subscriptionApi'
 import { isValidEmail } from '../utils'
 
-const TopLeftImage = require('../assets/home_top_left.svg').default as string;
-const BottomRightImage = require('../assets/home_bottom_right.svg').default as string;
-const RingImage = require('../assets/ring_icon.svg').default as string;
+const TopLeftImage = require('../assets/home_top_left.svg').default as string
+const BottomRightImage = require('../assets/home_bottom_right.svg').default as string
+const RingImage = require('../assets/ring_icon.svg').default as string
 
 const useStyles = makeStyles((theme) => ({
   container: {

@@ -18,7 +18,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 
 import TopBar from '../components/TopBar'
-import { browseAllGuests, deleteGuest, GuestApi } from '../services/guestApi'
+import { browseAllGuests, deleteGuest, GuestApiModel } from '../services/guestApi'
 import { UserContext } from '../services/UserContext'
 
 const useStyles = makeStyles((theme) => ({
@@ -42,13 +42,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function GuestList() {
   const classes = useStyles({})
-  const [guests, setGuests] = React.useState<Array<GuestApi.Model>>([])
+  const [guests, setGuests] = React.useState<Array<GuestApiModel>>([])
   const [loading, setLoading] = React.useState<boolean>(true)
   const [sortBy, setSortBy] = React.useState<'name' | 'date'>('name')
   const [sortIsAscending, setSortIsAscending] = React.useState<boolean>(true)
   const userContext = React.useContext(UserContext)
   React.useEffect(() => {
-    fetchGuests()
+    fetchGuests() // tslint:disable-line no-floating-promises
   }, [userContext.loading])
 
   const handleTableHeaderClick = (label: 'name' | 'date') => {
@@ -80,9 +80,9 @@ export default function GuestList() {
     }
   }
 
-  const handleDeleteGuest = async (guest: GuestApi.Model) => {
+  const handleDeleteGuest = async (guest: GuestApiModel) => {
     await deleteGuest(guest.bookingEmail, guest.name)
-    fetchGuests(false)
+    await fetchGuests(false)
   }
 
   const getSortedGuests = () => {
@@ -147,12 +147,12 @@ export default function GuestList() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {getSortedGuests().map((guest: GuestApi.Model) => (
+                {getSortedGuests().map((guest: GuestApiModel) => (
                   <GuestRow
                     key={guest.name}
                     guest={guest}
                     onDelete={handleDeleteGuest}
-                    onEdit={() => {}}
+                    onEdit={() => { console.log('Edit handler placeholder') }}
                   />
                 ))}
               </TableBody>
@@ -164,7 +164,7 @@ export default function GuestList() {
   )
 }
 
-const GuestRow = (props: GuestList.GuestRow.Props) => {
+const GuestRow = (props: GuestRowProps) => {
   const { guest, onDelete, onEdit } = props
   const classes = useStyles()
   const [disabled, setDisabled] = React.useState<boolean>(false)
@@ -198,12 +198,8 @@ const GuestRow = (props: GuestList.GuestRow.Props) => {
   )
 }
 
-export namespace GuestList {
-  export namespace GuestRow {
-    export interface Props {
-      guest: GuestApi.Model
-      onDelete: (guest: GuestApi.Model) => any
-      onEdit: (guest: GuestApi.Model) => any
-    }
-  }
+export interface GuestRowProps {
+  guest: GuestApiModel
+  onDelete: (guest: GuestApiModel) => any
+  onEdit: (guest: GuestApiModel) => any
 }

@@ -1,4 +1,4 @@
-export const addBooking = async (booking: BookingApi.Model) => {
+export const addBooking = async (booking: BookingApiModel) => {
   const response = await fetch(`${process.env.API_URL}/booking`, {
     method: 'POST',
     mode: 'cors',
@@ -19,7 +19,7 @@ export const addBooking = async (booking: BookingApi.Model) => {
   return responseBody
 }
 
-export const browseBookings = async (idToken: string): Promise<Array<BookingApi.Model>> => {
+export const browseBookings = async (idToken: string): Promise<Array<BookingApiModel>> => {
   const response = await fetch(`${process.env.API_URL}/booking/browse`, {
     method: 'GET',
     mode: 'cors',
@@ -32,13 +32,13 @@ export const browseBookings = async (idToken: string): Promise<Array<BookingApi.
   if (!response.ok) {
     throw new Error(responseBody.error || 'Failed to browse booking(s)')
   }
-  return responseBody.map((rawBooking: BookingApi.Model) => ({
+  return responseBody.map((rawBooking: BookingApiModel) => ({
     ...rawBooking,
     bookingDate: new Date(rawBooking.bookingDate),
-  })) as Array<BookingApi.Model>
+  })) as Array<BookingApiModel>
 }
 
-export const deleteBooking = async (idToken: string, email: string): Promise<BookingApi.Model> => {
+export const deleteBooking = async (idToken: string, email: string): Promise<BookingApiModel> => {
   const response = await fetch(`${process.env.API_URL}/booking`, {
     method: 'DELETE',
     mode: 'cors',
@@ -58,19 +58,17 @@ export const deleteBooking = async (idToken: string, email: string): Promise<Boo
   return {
     ...responseBody,
     bookingDate: new Date(responseBody.bookingDate),
-  } as BookingApi.Model
+  } as BookingApiModel
 }
 
-export namespace BookingApi {
-  export interface Model {
-    email: string,
-    bookingDate: Date,
-    name: string,
-    type: BookingTypeEnum,
-  }
+export interface BookingApiModel {
+  email: string,
+  bookingDate: Date,
+  name: string,
+  type: BookingTypeEnum,
+}
 
-  export enum BookingTypeEnum {
-    INDIVIDUAL = 'individual',
-    FAMILY = 'family',
-  }
+export enum BookingTypeEnum {
+  INDIVIDUAL = 'individual',
+  FAMILY = 'family',
 }

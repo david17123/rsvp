@@ -1,8 +1,8 @@
 import {
   Request as ExpressRequest
-} from 'express';
+} from 'express'
 
-import { BookingUpdate } from '../../models/booking';
+import { BookingUpdate } from '../../models/booking'
 
 export interface ReadBookingRequest extends ExpressRequest {
   params: {},

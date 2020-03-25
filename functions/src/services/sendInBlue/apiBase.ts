@@ -1,24 +1,24 @@
-import https from 'https';
-import http from 'http';
-import querystring from 'querystring';
+import https from 'https'
+import http from 'http'
+import querystring from 'querystring'
 
 export default class ApiBase {
-  protected apiKey: string;
+  protected apiKey: string
 
   constructor(apiKey: string) {
-    this.apiKey = apiKey;
+    this.apiKey = apiKey
   }
 
   public setApiKey(apiKey: string) {
-    this.apiKey = apiKey;
+    this.apiKey = apiKey
   }
 
   protected sendRequest(method: 'GET' | 'POST' | 'PUT' | 'DELETE', uri: string, headers: http.OutgoingHttpHeaders, body: Object) {
     return new Promise<any>((resolve, reject) => {
-      const bodyPayload: string = method !== 'GET' ? JSON.stringify(body) : '';
-      let composedUri: string = `/v3/${uri}`;
+      const bodyPayload: string = method !== 'GET' ? JSON.stringify(body) : ''
+      let composedUri: string = `/v3/${uri}`
       if (method === 'GET' && !!body) {
-        composedUri += `?${querystring.encode(body as querystring.ParsedUrlQueryInput)}`;
+        composedUri += `?${querystring.encode(body as querystring.ParsedUrlQueryInput)}`
       }
 
       const options = {
@@ -33,18 +33,18 @@ export default class ApiBase {
           'api-key': this.apiKey,
           ...headers,
         },
-      };
+      }
 
       const req = https.request(options, (res) => {
-        const chunks: Array<Uint8Array> = [];
+        const chunks: Array<Uint8Array> = []
 
         res.on('data', (chunk) => {
-          chunks.push(chunk);
-        });
+          chunks.push(chunk)
+        })
 
         res.on('end', () => {
-          const responseBody = Buffer.concat(chunks).toString();
-          const parsedResponse = responseBody ? JSON.parse(responseBody) : null;
+          const responseBody = Buffer.concat(chunks).toString()
+          const parsedResponse = responseBody ? JSON.parse(responseBody) : null
 
           if (res.statusCode) {
             if (Math.floor(res.statusCode / 100) === 4 || Math.floor(res.statusCode / 100) === 5) {
@@ -52,23 +52,23 @@ export default class ApiBase {
                 statusCode: res.statusCode,
                 statusMessage: res.statusMessage,
                 error: parsedResponse,
-              });
-              return;
+              })
+              return
             }
           }
-          resolve(parsedResponse);
+          resolve(parsedResponse)
         })
-      });
+      })
 
       req.on('error', error => {
-        reject(error);
-      });
+        reject(error)
+      })
 
       if (body !== null) {
-        req.write(bodyPayload);
+        req.write(bodyPayload)
       }
 
-      req.end();
-    });
+      req.end()
+    })
   }
 }

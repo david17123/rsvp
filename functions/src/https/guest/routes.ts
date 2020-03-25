@@ -1,5 +1,5 @@
-import express from 'express';
-import cors from 'cors';
+import express from 'express'
+import cors from 'cors'
 
 import {
   readGuest,
@@ -8,18 +8,18 @@ import {
   addGuest,
   editGuest,
   deleteGuest,
-} from './controllers';
-import loggedInMiddleware from '../middlewares/loggedIn';
+} from './controllers'
+import loggedInMiddleware from '../middlewares/loggedIn'
 
-const app = express();
+const app = express()
 
-app.use(cors());
+app.use(cors())
 
-app.get('/', readGuest);
-app.get('/browse', browseGuests);
-app.get('/browse/all', loggedInMiddleware, browseAllGuests);
-app.post('/', addGuest);
-app.put('/', editGuest);
-app.delete('/', deleteGuest);
+app.get('/', readGuest)
+app.get('/browse', browseGuests)
+app.get('/browse/all', loggedInMiddleware, browseAllGuests)
+app.post('/', addGuest)
+app.put('/', editGuest)
+app.delete('/', deleteGuest)
 
-export default app;
+export default app

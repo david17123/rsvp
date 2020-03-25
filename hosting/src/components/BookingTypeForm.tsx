@@ -5,10 +5,10 @@ import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 
-import { BookingApi } from '../services/bookingApi'
+import { BookingTypeEnum } from '../services/bookingApi'
 
-const IndividualIcon = require('../assets/individual_icon.svg').default as string;
-const FamilyIcon = require('../assets/family_icon.svg').default as string;
+const IndividualIcon = require('../assets/individual_icon.svg').default as string
+const FamilyIcon = require('../assets/family_icon.svg').default as string
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function BookingTypeForm(props: BookingTypeForm.Props) {
+export default function BookingTypeForm(props: BookingTypeFormProps) {
   const classes = useStyles()
 
   return (
@@ -58,7 +58,7 @@ export default function BookingTypeForm(props: BookingTypeForm.Props) {
             className={classes.individualIconButton}
             variant="outlined"
             color="primary"
-            onClick={() => props.onSelect(BookingApi.BookingTypeEnum.INDIVIDUAL)}
+            onClick={() => props.onSelect(BookingTypeEnum.INDIVIDUAL)}
           >
             <img className={classes.individualButtonIcon} src={IndividualIcon} />
           </Button>
@@ -69,7 +69,7 @@ export default function BookingTypeForm(props: BookingTypeForm.Props) {
             className={classes.familyIconButton}
             variant="outlined"
             color="primary"
-            onClick={() => props.onSelect(BookingApi.BookingTypeEnum.FAMILY)}
+            onClick={() => props.onSelect(BookingTypeEnum.FAMILY)}
           >
             <img className={classes.familyButtonIcon} src={FamilyIcon} />
           </Button>
@@ -80,8 +80,6 @@ export default function BookingTypeForm(props: BookingTypeForm.Props) {
   )
 }
 
-export namespace BookingTypeForm {
-  export interface Props {
-    onSelect: (val: BookingApi.BookingTypeEnum) => any,
-  }
+export interface BookingTypeFormProps {
+  onSelect: (val: BookingTypeEnum) => any,
 }

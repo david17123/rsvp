@@ -5,10 +5,10 @@ import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 
-const TopLeftImage = require('../assets/secondary_top_left.svg').default as string;
-const BottomRightImage = require('../assets/secondary_bottom_right.svg').default as string;
-const RingImage = require('../assets/ring_icon.svg').default as string;
-const HeartImage = require('../assets/heart_icon.svg').default as string;
+const TopLeftImage = require('../assets/secondary_top_left.svg').default as string
+const BottomRightImage = require('../assets/secondary_bottom_right.svg').default as string
+const RingImage = require('../assets/ring_icon.svg').default as string
+const HeartImage = require('../assets/heart_icon.svg').default as string
 
 const useStyles = makeStyles((theme) => ({
   container: {

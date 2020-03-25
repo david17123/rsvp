@@ -1,8 +1,8 @@
 import {
   Request as ExpressRequest
-} from 'express';
+} from 'express'
 
-import { GuestUpdate } from '../../models/guest';
+import { GuestUpdate } from '../../models/guest'
 
 export interface ReadGuestRequest extends ExpressRequest {
   params: {},
