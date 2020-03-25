@@ -14,8 +14,8 @@ import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
-import { BookingApi } from '../services/bookingApi'
-import { GuestApi } from '../services/guestApi'
+import { BookingApiModel } from '../services/bookingApi'
+import { GuestApiModel } from '../services/guestApi'
 import { isValidEmail } from '../utils'
 
 const useStyles = makeStyles((theme) => ({
@@ -39,24 +39,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
+export default function FamilyBookingForm(props: FamilyBookingFormProps) {
   const classes = useStyles()
   const [familyOf, setFamilyOf] = React.useState<number>(1)
-  const [errors, setErrors] = React.useState<FamilyBookingForm.FormError>({})
+  const [errors, setErrors] = React.useState<FormError>({})
 
-  const handleBookingChange = (updateBookingObject: Partial<BookingApi.Model>) => {
+  const handleBookingChange = (updateBookingObject: Partial<BookingApiModel>) => {
     return props.onBookingChange({
       ...props.booking,
       ...updateBookingObject,
     })
   }
 
-  const handleGuestChange = (updateGuestObject: Partial<GuestApi.Model>, index: number) => {
+  const handleGuestChange = (updateGuestObject: Partial<GuestApiModel>, index: number) => {
     if (props.guests.length < index && index !== 0) {
       throw new Error(`Index guest to update is out of range: ${index}`)
     }
 
-    let updatedGuests: Array<Partial<GuestApi.Model>> = [ ...props.guests ]
+    let updatedGuests: Array<Partial<GuestApiModel>> = [ ...props.guests ]
     if (updatedGuests.length === 0) {
       updatedGuests = [{ isChild: false }] // First guest, who is the one making the booking, is assumed to be not a child
     }
@@ -93,7 +93,7 @@ export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
   }
 
   const handleSubmit = () => {
-    const compiledErrors: FamilyBookingForm.FormError = {}
+    const compiledErrors: FormError = {}
     if (!props.booking.name) {
       compiledErrors.name = 'Name is required'
     }
@@ -104,7 +104,7 @@ export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
     }
 
     if (familyOf > 1 && props.guests.length > 0) {
-      const familyMemberErrors: Array<FamilyBookingForm.FamilyMemberError> = []
+      const familyMemberErrors: Array<FamilyMemberError> = []
       for (let i = 0; i < familyOf - 1; i += 1) {
         familyMemberErrors.push({})
         const familyMemberGuest = props.guests[i + 1]
@@ -266,23 +266,23 @@ export default function FamilyBookingForm(props: FamilyBookingForm.Props) {
   )
 }
 
-export namespace FamilyBookingForm {
-  export interface Props {
-    onBookingChange: (val: Partial<BookingApi.Model>) => any,
-    onGuestsChange: (val: Array<Partial<GuestApi.Model>>) => any,
-    onSubmit: () => any,
-    disabled: boolean,
-    booking: Partial<BookingApi.Model>,
-    /** First element of guests array is always assumed to be the person making the booking */
-    guests: Array<Partial<GuestApi.Model>>,
-  }
-  export interface FormError {
-    name?: string,
-    email?: string,
-    familyMembers?: Array<FamilyMemberError>,
-  }
-  export interface FamilyMemberError {
-    name?: string,
-    isChild?: string,
-  }
+export interface FamilyBookingFormProps {
+  onBookingChange: (val: Partial<BookingApiModel>) => any,
+  onGuestsChange: (val: Array<Partial<GuestApiModel>>) => any,
+  onSubmit: () => any,
+  disabled: boolean,
+  booking: Partial<BookingApiModel>,
+  /** First element of guests array is always assumed to be the person making the booking */
+  guests: Array<Partial<GuestApiModel>>,
+}
+
+interface FormError {
+  name?: string,
+  email?: string,
+  familyMembers?: Array<FamilyMemberError>,
+}
+
+interface FamilyMemberError {
+  name?: string,
+  isChild?: string,
 }

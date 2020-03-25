@@ -1,4 +1,4 @@
-export const addGuests = async (bookingEmail: string, guests: Array<GuestApi.Model>) => {
+export const addGuests = async (bookingEmail: string, guests: Array<GuestApiModel>) => {
   const response = await fetch(`${process.env.API_URL}/guest`, {
     method: 'POST',
     mode: 'cors',
@@ -18,7 +18,7 @@ export const addGuests = async (bookingEmail: string, guests: Array<GuestApi.Mod
   return responseBody
 }
 
-export const browseAllGuests = async (idToken: string): Promise<Array<GuestApi.Model>> => {
+export const browseAllGuests = async (idToken: string): Promise<Array<GuestApiModel>> => {
   const response = await fetch(`${process.env.API_URL}/guest/browse/all`, {
     method: 'GET',
     mode: 'cors',
@@ -31,13 +31,13 @@ export const browseAllGuests = async (idToken: string): Promise<Array<GuestApi.M
   if (!response.ok) {
     throw new Error(responseBody.error || 'Failed to browse guest(s)')
   }
-  return responseBody.map((rawGuest: GuestApi.Model) => ({
+  return responseBody.map((rawGuest: GuestApiModel) => ({
     ...rawGuest,
     addedDate: new Date(rawGuest.addedDate),
-  })) as Array<GuestApi.Model>
+  })) as Array<GuestApiModel>
 }
 
-export const deleteGuest = async (bookingEmail: string, name: string): Promise<GuestApi.Model> => {
+export const deleteGuest = async (bookingEmail: string, name: string): Promise<GuestApiModel> => {
   const response = await fetch(`${process.env.API_URL}/guest`, {
     method: 'DELETE',
     mode: 'cors',
@@ -57,15 +57,13 @@ export const deleteGuest = async (bookingEmail: string, name: string): Promise<G
   return {
     ...responseBody,
     addedDate: new Date(responseBody.addedDate),
-  } as GuestApi.Model
+  } as GuestApiModel
 }
 
-export namespace GuestApi {
-  export interface Model {
-    name: string,
-    dietaryRequirements?: string,
-    isChild: boolean,
-    addedDate: Date,
-    bookingEmail: string,
-  }
+export interface GuestApiModel {
+  name: string,
+  dietaryRequirements?: string,
+  isChild: boolean,
+  addedDate: Date,
+  bookingEmail: string,
 }

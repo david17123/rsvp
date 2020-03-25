@@ -8,7 +8,7 @@ import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { login, Login } from '../services/login'
+import { login, LoginError } from '../services/login'
 import { UserContext } from '../services/UserContext'
 
 const useStyles = makeStyles((theme) => ({
@@ -44,27 +44,27 @@ export default function AdminLogin(props: RouteComponentProps) {
     setLoading(true)
     setError({})
     const res = await login(email, password)
-    if (res === Login.Error.INVALID_EMAIL) {
+    if (res === LoginError.INVALID_EMAIL) {
       setError({
         email: 'Invalid email',
       })
-    } else if (res === Login.Error.USER_DISABLED) {
+    } else if (res === LoginError.USER_DISABLED) {
       setError({
         email: 'Account is locked',
       })
-    } else if (res === Login.Error.USER_NOT_FOUND) {
+    } else if (res === LoginError.USER_NOT_FOUND) {
       setError({
         email: 'Cannot find user with email',
       })
-    } else if (res === Login.Error.WRONG_PASSWORD) {
+    } else if (res === LoginError.WRONG_PASSWORD) {
       setError({
         password: 'Invalid password',
       })
-    } else if (res === Login.Error.TOO_MANY_FAILED_ATTEMPTS) {
+    } else if (res === LoginError.TOO_MANY_FAILED_ATTEMPTS) {
       setError({
         password: 'Too many failed attempts. Try again later.',
       })
-    } else if (res === Login.Error.GENERIC) {
+    } else if (res === LoginError.GENERIC) {
       setError({
         email: 'Failed to authenticate',
       })
