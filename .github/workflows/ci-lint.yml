@@ -18,7 +18,7 @@ jobs:
         run: |
           cd functions
           yarn
-          npx tslint --project tsconfig.json
+          yarn lint
   ts-lint-hosting:
     name: Run TS linter on hosting codebase
     runs-on: ubuntu-latest
@@ -33,4 +33,4 @@ jobs:
         run: |
           cd hosting
           yarn
-          npx tslint --project tsconfig.json
+          yarn lint
