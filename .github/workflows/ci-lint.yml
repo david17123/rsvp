@@ -17,6 +17,7 @@ jobs:
       - name: Run TS lint
         run: |
           cd functions
+          yarn
           npx tslint --project tsconfig.json
   ts-lint-hosting:
     name: Run TS linter on hosting codebase
@@ -31,4 +32,5 @@ jobs:
       - name: Run TS lint
         run: |
           cd hosting
+          yarn
           npx tslint --project tsconfig.json
