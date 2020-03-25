@@ -1,5 +1,7 @@
 import SmtpApi from './smtpApi';
+import * as SmtpApiTypes from './smtpApiTypes';
 import ContactsApi from './contactsApi';
+import * as ContactsApiTypes from './contactsApiTypes';
 
 /**
  * A simple (partial) wrapper to the SendInBlue Rest API endpoints. The wrapper
@@ -22,7 +24,9 @@ export default class SendInBlue {
   }
 }
 
-export * from './smtpApi';
-export * as SmtpApiTypes from './smtpApiTypes';
-export * from './contactsApi';
-export * as ContactsApiTypes from './contactsApi';
+export {
+  SmtpApi,
+  SmtpApiTypes,
+  ContactsApi,
+  ContactsApiTypes,
+};
