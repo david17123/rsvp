@@ -1,6 +1,7 @@
 import { Response } from 'express'
 
 import Mailer from '../../services/mailer'
+import { sendMarkdownMessage } from '../../services/slack'
 import * as ControllerTypes from './controllerTypes'
 
 export const addSubscription = async (req: ControllerTypes.AddSubscriptionRequest, res: Response) => {
@@ -10,6 +11,7 @@ export const addSubscription = async (req: ControllerTypes.AddSubscriptionReques
 
     await mailer.createOrUpdateContact(email, '', '', [Mailer.NEWSLETTER_UPDATES_LIST_ID])
     await mailer.sendEmailTemplate(Mailer.NEWSLETTER_WELCOME_TEMPLATE_ID, null, email)
+    await sendMarkdownMessage(`*${email}* has just signed up for newsletter`)
 
     res.json({ success: true })
   } catch (e) {

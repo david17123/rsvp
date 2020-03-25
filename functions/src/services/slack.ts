@@ -40,7 +40,14 @@ export const sendMessage = (payload: Object) => {
 
       res.on('end', function () {
         const responseBody = Buffer.concat(chunks).toString()
-        const parsedResponse = responseBody ? JSON.parse(responseBody) : null
+        let parsedResponse = null
+        if (responseBody) {
+          try {
+            parsedResponse = JSON.parse(responseBody)
+          } catch (e) {
+            parsedResponse = responseBody
+          }
+        }
 
         if (res.statusCode) {
           if (Math.floor(res.statusCode / 100) === 4 || Math.floor(res.statusCode / 100) === 5) {
