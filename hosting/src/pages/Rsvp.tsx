@@ -14,9 +14,9 @@ import { GuestApiModel, addGuests } from '../services/guestApi'
 import { deepMerge } from '../utils'
 import { routePaths } from '../Routes'
 
-const TopLeftImage = require('../assets/secondary_top_left.svg').default as string;
-const BottomRightImage = require('../assets/secondary_bottom_right.svg').default as string;
-const RingImage = require('../assets/ring_icon.svg').default as string;
+const TopLeftImage = require('../assets/secondary_top_left.svg').default as string
+const BottomRightImage = require('../assets/secondary_bottom_right.svg').default as string
+const RingImage = require('../assets/ring_icon.svg').default as string
 
 const useStyles = makeStyles((theme) => ({
   container: {

@@ -1,6 +1,6 @@
 import {
   Request as ExpressRequest
-} from 'express';
+} from 'express'
 
 export interface AddSubscriptionRequest extends ExpressRequest {
   params: {},

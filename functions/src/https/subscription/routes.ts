@@ -1,14 +1,14 @@
-import express from 'express';
-import cors from 'cors';
+import express from 'express'
+import cors from 'cors'
 
 import {
   addSubscription,
-} from './controllers';
+} from './controllers'
 
-const app = express();
+const app = express()
 
-app.use(cors());
+app.use(cors())
 
-app.post('/', addSubscription);
+app.post('/', addSubscription)
 
-export default app;
+export default app

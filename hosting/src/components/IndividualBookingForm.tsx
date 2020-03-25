@@ -124,8 +124,8 @@ export default function IndividualBookingForm(props: IndividualBookingFormProps)
           label="Full name"
           value={props.booking.name || ''}
           onChange={(event) => {
-            handleBookingChange({ name: event.target.value });
-            handleGuestChange({ name: event.target.value }, 0);
+            handleBookingChange({ name: event.target.value })
+            handleGuestChange({ name: event.target.value }, 0)
           }}
           error={!!errors.name}
           helperText={errors.name}

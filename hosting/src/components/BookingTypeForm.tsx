@@ -7,8 +7,8 @@ import Typography from '@material-ui/core/Typography'
 
 import { BookingTypeEnum } from '../services/bookingApi'
 
-const IndividualIcon = require('../assets/individual_icon.svg').default as string;
-const FamilyIcon = require('../assets/family_icon.svg').default as string;
+const IndividualIcon = require('../assets/individual_icon.svg').default as string
+const FamilyIcon = require('../assets/family_icon.svg').default as string
 
 const useStyles = makeStyles((theme) => ({
   title: {

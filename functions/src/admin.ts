@@ -1,5 +1,5 @@
-import admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
+import admin from 'firebase-admin'
+import * as functions from 'firebase-functions'
 
 export interface FunctionsConfig {
   sendinblue: {
@@ -7,9 +7,9 @@ export interface FunctionsConfig {
   },
 }
 
-const app = admin.initializeApp();
-export const db = admin.firestore();
-export const auth = admin.auth();
-export const config: FunctionsConfig = functions.config() as FunctionsConfig;
+const app = admin.initializeApp()
+export const db = admin.firestore()
+export const auth = admin.auth()
+export const config: FunctionsConfig = functions.config() as FunctionsConfig
 
-export default app;
+export default app

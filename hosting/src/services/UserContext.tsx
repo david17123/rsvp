@@ -10,7 +10,7 @@ export function UserProvider(props: UserContextProviderProps) {
   firebase.auth().onAuthStateChanged((user: firebase.User | null) => {
     setCurrentUser(user)
     setLoading(false)
-  });
+  })
 
   return (
     <UserContext.Provider value={{ user: currentUser, loading }}>

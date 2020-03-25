@@ -70,7 +70,7 @@ export default function AdminLogin(props: RouteComponentProps) {
       })
     }
     setLoading(false)
-  };
+  }
 
   if (!loadingLoggedInUser && user) {
     const { location } = props

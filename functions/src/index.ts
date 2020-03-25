@@ -1,4 +1,4 @@
-export * from './https';
+export * from './https'
 
 // GET booking
 // POST booking
