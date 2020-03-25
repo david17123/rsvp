@@ -3,7 +3,7 @@ import { Response } from 'express';
 import Mailer from '../../services/mailer';
 import * as ControllerTypes from './controllerTypes';
 
-export const addSubscription = async (req: ControllerTypes.AddSubscription.Request, res: Response) => {
+export const addSubscription = async (req: ControllerTypes.AddSubscriptionRequest, res: Response) => {
   try {
     const { email } = req.body;
     const mailer = new Mailer();

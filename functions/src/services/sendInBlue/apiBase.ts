@@ -36,7 +36,7 @@ export default class ApiBase {
       };
 
       const req = https.request(options, (res) => {
-        let chunks: Array<Uint8Array> = [];
+        const chunks: Array<Uint8Array> = [];
 
         res.on('data', (chunk) => {
           chunks.push(chunk);

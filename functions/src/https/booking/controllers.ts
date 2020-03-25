@@ -4,7 +4,7 @@ import { db } from '../../admin';
 import { Booking } from '../../models/booking';
 import * as ControllerTypes from './controllerTypes';
 
-export const readBooking = async (req: ControllerTypes.ReadBooking.Request, res: Response) => {
+export const readBooking = async (req: ControllerTypes.ReadBookingRequest, res: Response) => {
   try {
     const { email } = req.body;
 
@@ -24,7 +24,7 @@ export const readBooking = async (req: ControllerTypes.ReadBooking.Request, res:
   }
 };
 
-export const browseBookings = async (req: ControllerTypes.BrowseBooking.Request, res: Response) => {
+export const browseBookings = async (req: ControllerTypes.BrowseBookingRequest, res: Response) => {
   try {
     const bookingCollection = db.collection('booking');
     const allBookings: Array<Booking> = [];
@@ -43,7 +43,7 @@ export const browseBookings = async (req: ControllerTypes.BrowseBooking.Request,
   }
 };
 
-export const addBooking = async (req: ControllerTypes.AddBooking.Request, res: Response) => {
+export const addBooking = async (req: ControllerTypes.AddBookingRequest, res: Response) => {
   try {
     const { email, name, type } = req.body;
 
@@ -70,7 +70,7 @@ export const addBooking = async (req: ControllerTypes.AddBooking.Request, res: R
   }
 };
 
-export const editBooking = async (req: ControllerTypes.EditBooking.Request, res: Response) => {
+export const editBooking = async (req: ControllerTypes.EditBookingRequest, res: Response) => {
   try {
     const { email, update } = req.body;
 
@@ -94,7 +94,7 @@ export const editBooking = async (req: ControllerTypes.EditBooking.Request, res:
   }
 };
 
-export const deleteBooking = async (req: ControllerTypes.DeleteBooking.Request, res: Response) => {
+export const deleteBooking = async (req: ControllerTypes.DeleteBookingRequest, res: Response) => {
   try {
     const { email } = req.body;
 

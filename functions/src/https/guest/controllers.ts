@@ -4,7 +4,7 @@ import { db } from '../../admin';
 import { Guest, GuestUpdate } from '../../models/guest';
 import * as ControllerTypes from './controllerTypes';
 
-export const readGuest = async (req: ControllerTypes.ReadGuest.Request, res: Response) => {
+export const readGuest = async (req: ControllerTypes.ReadGuestRequest, res: Response) => {
   try {
     const { bookingEmail, name } = req.body;
 
@@ -27,7 +27,7 @@ export const readGuest = async (req: ControllerTypes.ReadGuest.Request, res: Res
   }
 }
 
-export const browseGuests = async (req: ControllerTypes.BrowseGuest.Request, res: Response) => {
+export const browseGuests = async (req: ControllerTypes.BrowseGuestRequest, res: Response) => {
   try {
     const { bookingEmail } = req.body;
 
@@ -47,7 +47,7 @@ export const browseGuests = async (req: ControllerTypes.BrowseGuest.Request, res
   }
 };
 
-export const browseAllGuests = async (req: ControllerTypes.BrowseAllGuest.Request, res: Response) => {
+export const browseAllGuests = async (req: ControllerTypes.BrowseAllGuestRequest, res: Response) => {
   try {
     const guestCollection = db.collection('guest');
     const allGuests: Array<Guest> = [];
@@ -66,7 +66,7 @@ export const browseAllGuests = async (req: ControllerTypes.BrowseAllGuest.Reques
   }
 }
 
-export const addGuest = async (req: ControllerTypes.AddGuest.Request, res: Response) => {
+export const addGuest = async (req: ControllerTypes.AddGuestRequest, res: Response) => {
   try {
     const { bookingEmail, guests } = req.body;
     validateGuests(guests);
@@ -123,7 +123,7 @@ export const addGuest = async (req: ControllerTypes.AddGuest.Request, res: Respo
   }
 };
 
-export const editGuest = async (req: ControllerTypes.EditGuest.Request, res: Response) => {
+export const editGuest = async (req: ControllerTypes.EditGuestRequest, res: Response) => {
   try {
     const { bookingEmail, name, update } = req.body;
     validateGuests([update]);
@@ -151,7 +151,7 @@ export const editGuest = async (req: ControllerTypes.EditGuest.Request, res: Res
   }
 };
 
-export const deleteGuest = async (req: ControllerTypes.DeleteGuest.Request, res: Response) => {
+export const deleteGuest = async (req: ControllerTypes.DeleteGuestRequest, res: Response) => {
   try {
     const { bookingEmail, name } = req.body;
 

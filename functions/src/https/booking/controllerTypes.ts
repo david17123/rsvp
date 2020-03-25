@@ -4,44 +4,34 @@ import {
 
 import { BookingUpdate } from '../../models/booking';
 
-export namespace ReadBooking {
-  export interface Request extends ExpressRequest {
-    params: {},
-    body: {
-      email: string,
-    },
-  }
+export interface ReadBookingRequest extends ExpressRequest {
+  params: {},
+  body: {
+    email: string,
+  },
 }
 
-export namespace BrowseBooking {
-  export interface Request extends ExpressRequest {
-    params: {},
-    body: {},
-  }
+export interface BrowseBookingRequest extends ExpressRequest {
+  params: {},
+  body: {},
 }
 
-export namespace AddBooking {
-  export interface Request extends ExpressRequest {
-    params: {},
-    body: BookingUpdate,
-  }
+export interface AddBookingRequest extends ExpressRequest {
+  params: {},
+  body: BookingUpdate,
 }
 
-export namespace EditBooking {
-  export interface Request extends ExpressRequest {
-    params: {},
-    body: {
-      email: string,
-      update: Partial<BookingUpdate>,
-    },
-  }
+export interface EditBookingRequest extends ExpressRequest {
+  params: {},
+  body: {
+    email: string,
+    update: Partial<BookingUpdate>,
+  },
 }
 
-export namespace DeleteBooking {
-  export interface Request extends ExpressRequest {
-    params: {},
-    body: {
-      email: string,
-    },
-  }
+export interface DeleteBookingRequest extends ExpressRequest {
+  params: {},
+  body: {
+    email: string,
+  },
 }
