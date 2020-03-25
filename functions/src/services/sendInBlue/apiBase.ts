@@ -36,25 +36,27 @@ export default class ApiBase {
       };
 
       const req = https.request(options, (res) => {
-
-        let responseBody = '';
+        let chunks: Array<Uint8Array> = [];
 
         res.on('data', (chunk) => {
-          responseBody += chunk.toString();
+          chunks.push(chunk);
         });
 
         res.on('end', () => {
+          const responseBody = Buffer.concat(chunks).toString();
+          const parsedResponse = responseBody ? JSON.parse(responseBody) : null;
+
           if (res.statusCode) {
             if (Math.floor(res.statusCode / 100) === 4 || Math.floor(res.statusCode / 100) === 5) {
               reject({
                 statusCode: res.statusCode,
                 statusMessage: res.statusMessage,
-                error: JSON.parse(responseBody),
+                error: parsedResponse,
               });
               return;
             }
           }
-          resolve(JSON.parse(responseBody));
+          resolve(parsedResponse);
         })
       });
 
