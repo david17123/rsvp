@@ -22,7 +22,7 @@ export const readGuest = async (req: ControllerTypes.ReadGuestRequest, res: Resp
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }
@@ -42,7 +42,7 @@ export const browseGuests = async (req: ControllerTypes.BrowseGuestRequest, res:
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }
@@ -61,7 +61,7 @@ export const browseAllGuests = async (req: ControllerTypes.BrowseAllGuestRequest
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }
@@ -118,7 +118,7 @@ export const addGuest = async (req: ControllerTypes.AddGuestRequest, res: Respon
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }
@@ -146,7 +146,7 @@ export const editGuest = async (req: ControllerTypes.EditGuestRequest, res: Resp
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }
@@ -174,7 +174,7 @@ export const deleteGuest = async (req: ControllerTypes.DeleteGuestRequest, res: 
     console.error(e)
     res.statusCode = 500
     res.json({
-      error: e.message
+      error: e.message,
     })
   }
 }

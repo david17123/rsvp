@@ -24,7 +24,7 @@ export const browseAllGuests = async (idToken: string): Promise<Array<GuestApiMo
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      'Authorization': `Bearer ${idToken}`,
+      Authorization: `Bearer ${idToken}`,
     },
   })
   const responseBody = await response.json()
