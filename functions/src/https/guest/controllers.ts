@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 import { db } from '../../admin';
 import { Guest, GuestUpdate } from '../../models/guest';
-import ControllerTypes from './controllerTypes';
+import * as ControllerTypes from './controllerTypes';
 
 export const readGuest = async (req: ControllerTypes.ReadGuest.Request, res: Response) => {
   try {

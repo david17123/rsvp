@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 import { db } from '../../admin';
 import { Booking } from '../../models/booking';
-import ControllerTypes from './controllerTypes';
+import * as ControllerTypes from './controllerTypes';
 
 export const readBooking = async (req: ControllerTypes.ReadBooking.Request, res: Response) => {
   try {

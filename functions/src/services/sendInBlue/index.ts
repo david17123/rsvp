@@ -23,4 +23,6 @@ export default class SendInBlue {
 }
 
 export * from './smtpApi';
+export * as SmtpApiTypes from './smtpApiTypes';
 export * from './contactsApi';
+export * as ContactsApiTypes from './contactsApi';
