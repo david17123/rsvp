@@ -51,11 +51,32 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(4),
   },
   announcement: {
-    width: '490px',
+    maxWidth: '490px',
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginBottom: theme.spacing(6.25),
+    marginBottom: theme.spacing(5),
     fontFamily: 'Timeless',
+  },
+  formContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  formElement: {
+    margin: theme.spacing(0.75),
+  },
+  firstNameTextField: {
+    flexGrow: 1,
+    marginRight: theme.spacing(0.75),
+  },
+  lastNameTextField: {
+    flexGrow: 1,
+    marginLeft: theme.spacing(0.75),
+  },
+  nameTextInput: {
+    paddingTop: theme.spacing(1.75),
+    paddingBottom: theme.spacing(1.75),
   },
   emailTextField: {
     paddingTop: theme.spacing(1.75),
@@ -71,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1.5),
   },
   finePrint: {
-    width: '380px',
+    maxWidth: '380px',
     fontFamily: 'Timeless',
     marginTop: theme.spacing(2.5),
     marginBottom: theme.spacing(2.5),
@@ -83,8 +104,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
   const classes = useStyles()
 
+  const [firstName, setFirstName] = React.useState('')
+  const [lastName, setLastName] = React.useState('')
   const [email, setEmail] = React.useState('')
-  const [errorMessage, setErrorMessage] = React.useState('')
+  const [firstNameError, setFirstNameError] = React.useState('')
+  const [emailError, setEmailError] = React.useState('')
   const [hasSavedEmail, setHasSavedEmail] = React.useState(false)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
 
@@ -92,14 +116,26 @@ export default function Home() {
     event.preventDefault()
     setIsSubmitting(true)
 
+    let formIsValid = true
+
+    if (!firstName) {
+      setFirstNameError('First name is required')
+      formIsValid = false
+    }
+
     if (!isValidEmail(email)) {
-      setErrorMessage('Email does not look right')
-    } else {
+      setEmailError('Email does not look right')
+      formIsValid = false
+    }
+
+    if (formIsValid) {
+      setFirstNameError('')
+      setEmailError('')
       try {
-        await addSubscription(email)
+        await addSubscription(email, firstName, lastName)
         setHasSavedEmail(true)
       } catch (e) {
-        setErrorMessage('Failed to subscribe. Please try again later.')
+        setEmailError('Failed to subscribe. Please try again later.')
       }
     }
 
@@ -124,8 +160,36 @@ export default function Home() {
             either David or I.
           </Typography>
           {!hasSavedEmail && (
-            <form onSubmit={handleSubmitEmailForm}>
+            <form className={classes.formContainer} onSubmit={handleSubmitEmailForm}>
+              <Box component="div" display="flex" className={classes.formElement}>
+                <TextField
+                  className={classes.firstNameTextField}
+                  placeholder="First name"
+                  variant="outlined"
+                  InputProps={{
+                    classes: { input: classes.nameTextInput },
+                  }}
+                  value={firstName}
+                  onChange={(event) => setFirstName(event.target.value)}
+                  disabled={isSubmitting}
+                  error={!!firstNameError}
+                  helperText={firstNameError}
+                  required
+                />
+                <TextField
+                  className={classes.lastNameTextField}
+                  placeholder="Last name"
+                  variant="outlined"
+                  InputProps={{
+                    classes: { input: classes.nameTextInput },
+                  }}
+                  value={lastName}
+                  onChange={(event) => setLastName(event.target.value)}
+                  disabled={isSubmitting}
+                />
+              </Box>
               <TextField
+                className={classes.formElement}
                 placeholder="Enter your email to receive updates"
                 variant="outlined"
                 InputProps={{
@@ -134,10 +198,12 @@ export default function Home() {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 disabled={isSubmitting}
-                error={!!errorMessage}
-                helperText={errorMessage}
+                error={!!emailError}
+                helperText={emailError}
+                required
               />
               <Button
+                className={classes.formElement}
                 variant="contained"
                 disableElevation
                 color="primary"

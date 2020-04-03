@@ -9,4 +9,6 @@ export interface AddSubscriptionRequest extends ExpressRequest {
 
 export interface NewSubscription {
   email: string,
+  firstName: string,
+  lastName: string,
 }
