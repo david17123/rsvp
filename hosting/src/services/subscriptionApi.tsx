@@ -1,4 +1,4 @@
-export const addSubscription = async (email: string) => {
+export const addSubscription = async (email: string, firstName: string, lastName?: string) => {
   const response = await fetch(`${process.env.API_URL}/subscription`, {
     method: 'POST',
     mode: 'cors',
@@ -6,7 +6,7 @@ export const addSubscription = async (email: string) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email, firstName, lastName }),
   })
   const responseBody = await response.json()
   if (!response.ok) {
