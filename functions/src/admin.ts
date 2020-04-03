@@ -5,6 +5,9 @@ export interface FunctionsConfig {
   sendinblue: {
     key: string,
   },
+  slack: {
+    webhook: string,
+  }
 }
 
 const app = admin.initializeApp()

@@ -182,7 +182,7 @@ export default function FamilyBookingForm(props: FamilyBookingFormProps) {
               <FormControlLabel className={classes.radioOptionContainer} value="none" control={<Radio color="primary" />} label="None" />
             </RadioGroup>
           </FormControl>
-        </Box>
+        </Box>,
       )
     }
 

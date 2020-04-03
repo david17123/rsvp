@@ -1,5 +1,5 @@
 import {
-  Request as ExpressRequest
+  Request as ExpressRequest,
 } from 'express'
 
 import { GuestUpdate } from '../../models/guest'
