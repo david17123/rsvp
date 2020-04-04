@@ -12,7 +12,9 @@ export const addSubscription = async (req: ControllerTypes.AddSubscriptionReques
 
     await mailer.createOrUpdateContact(email, firstName, lastName, [Mailer.NEWSLETTER_UPDATES_LIST_ID])
     await mailer.sendEmailTemplate(Mailer.NEWSLETTER_WELCOME_TEMPLATE_ID, null, email)
-    await sendMarkdownMessage(`*${email}* has just signed up for newsletter`)
+
+    const fullName = firstName + (lastName ? ` ${lastName}` : '')
+    await sendMarkdownMessage(`*${fullName}* has just signed up for newsletter`)
 
     res.json({ success: true })
   } catch (e) {
