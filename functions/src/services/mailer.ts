@@ -7,7 +7,7 @@ export default class Mailer {
 
   static NEWSLETTER_UPDATES_LIST_ID = 3
   static RSVP_GUESTS_LIST_ID = 4
-  static NEWSLETTER_WELCOME_TEMPLATE_ID = 3
+  static NEWSLETTER_WELCOME_TEMPLATE_ID = 9
 
   static getInstance() {
     if (!Mailer._instance) {
