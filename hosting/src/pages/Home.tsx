@@ -152,7 +152,7 @@ export default function Home() {
         <Box component="div" height="100vh" display="flex" flexDirection="column" justifyContent="center">
           <img className={classes.ringImage} src={RingImage} />
           <Typography className={classes.title} variant="h4" component="h1">David &amp; Anne</Typography>
-          <Typography className={classes.date} variant="body1">November 2020*</Typography>
+          <Typography className={classes.date} variant="body1">28 November 2020</Typography>
           <Typography className={classes.announcement} variant="body1">
             Please fill in your email so we can send you updates regarding the
             event and ensure everyone is on the same page regarding the
@@ -215,10 +215,6 @@ export default function Home() {
           {hasSavedEmail && (
             <Typography className={classes.subscribeConfirmation} variant="body1">Thanks for subscribing!</Typography>
           )}
-          <Typography className={classes.finePrint} variant="body1">
-            *dates subject to change in regards to the progress of the COVID-19
-            outbreak.
-          </Typography>
         </Box>
       </Container>
     </React.Fragment>
