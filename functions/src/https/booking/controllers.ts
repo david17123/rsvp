@@ -3,6 +3,8 @@ import { Response } from 'express'
 import { db } from '../../admin'
 import { Booking } from '../../models/booking'
 import * as ControllerTypes from './controllerTypes'
+import Mailer from '../../services/mailer'
+import { sendMarkdownMessage } from '../../services/slack'
 
 export const readBooking = async (req: ControllerTypes.ReadBookingRequest, res: Response) => {
   try {
@@ -53,6 +55,7 @@ export const addBooking = async (req: ControllerTypes.AddBookingRequest, res: Re
       throw new Error('Booking already made for the email')
     }
 
+    // Add new booking
     const newBooking: Booking = {
       email,
       name,
@@ -60,6 +63,14 @@ export const addBooking = async (req: ControllerTypes.AddBookingRequest, res: Re
       bookingDate: (new Date()).toISOString(),
     }
     await bookingCollection.add(newBooking)
+
+    //  Add booking email to RSVP newsletter list
+    const mailer = new Mailer()
+    await mailer.createOrUpdateContact(email, name, undefined, [Mailer.RSVP_GUESTS_LIST_ID])
+
+    // Send notification
+    await sendMarkdownMessage(`New RSVP booking: *${name} (${email})*`)
+
     res.json(newBooking)
   } catch (e) {
     console.error(e)
