@@ -9,10 +9,14 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import BookingTypeForm from '../components/BookingTypeForm'
 import FamilyBookingForm from '../components/FamilyBookingForm'
 import IndividualBookingForm from '../components/IndividualBookingForm'
-import { BookingApiModel, BookingTypeEnum, addBooking } from '../services/bookingApi'
-import { GuestApiModel, addGuests } from '../services/guestApi'
+import { BookingApiModel, BookingTypeEnum } from '../services/bookingApi'
+import { GuestApiModel } from '../services/guestApi'
 import { deepMerge } from '../utils'
 import { routePaths } from '../Routes'
+import {
+  rsvpFormContext,
+  RsvpFormStepsEnum,
+} from '../services/RsvpFormContext'
 
 const TopLeftImage = require('../assets/secondary_top_left.svg').default as string
 const BottomRightImage = require('../assets/secondary_bottom_right.svg').default as string
@@ -62,34 +66,102 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Rsvp(props: RouteComponentProps) {
   const classes = useStyles()
-  const [isSubmitting, setSubmitting] = React.useState<boolean>(false)
-  const [booking, setBooking] = React.useState<Partial<BookingApiModel>>({ bookingDate: new Date() })
-  const [guests, setGuests] = React.useState<Array<Partial<GuestApiModel>>>([])
-  const [showForm, setShowForm] = React.useState<boolean>(false)
+  const {
+    data,
+    setData,
+    currentStep,
+    goToStep,
+    submit,
+    isSubmitting,
+  } = React.useContext(rsvpFormContext)
 
   const updateBooking = (updateObject: Partial<BookingApiModel>) => {
-    setBooking(deepMerge({ ...booking }, updateObject))
+    setData({
+      ...data,
+      booking: deepMerge({ ...data.booking }, updateObject),
+    })
+  }
+
+  const updateGuests = (guests: Array<Partial<GuestApiModel>>) => {
+    setData({
+      ...data,
+      guests,
+    })
   }
 
   const handleSetBookingType = (val: BookingTypeEnum) => {
-    updateBooking({ type: val })
-    setShowForm(true)
+    setData({
+      ...data,
+      booking: {
+        ...data.booking,
+        type: val,
+      },
+    })
+    goToStep(RsvpFormStepsEnum.GUEST_DETAILS)
   }
 
   const handleFormSubmit = async () => {
-    setSubmitting(true)
-    try {
-      const bookingToSubmit: BookingApiModel = booking as BookingApiModel
-      const guestsToSubmit: Array<GuestApiModel> = guests as Array<GuestApiModel>
-      await addBooking(bookingToSubmit)
-      await addGuests(bookingToSubmit.email, guestsToSubmit)
-      props.history.push(routePaths.THANK_YOU)
-    } catch (e) {
-      // Might want to report to error reporting tool like Sentry
-      alert(`Error: ${e.message}`)
-      console.error(e)
+    await submit(data)
+    props.history.push(routePaths.THANK_YOU)
+  }
+
+  const renderBackButton = (targetStep: RsvpFormStepsEnum): JSX.Element => {
+    return (
+      <div className={classes.formHeader}>
+        <Button color="primary" className={classes.backButton} onClick={() => goToStep(targetStep)}>
+          <KeyboardArrowLeftIcon />
+          Go back
+        </Button>
+      </div>
+    )
+  }
+
+  const renderFormStep = () => {
+    if (currentStep === RsvpFormStepsEnum.TYPE_SELECTION) {
+      return (
+        <React.Fragment>
+          {renderBackButton(RsvpFormStepsEnum.LANDING)}
+          <BookingTypeForm onSelect={(val) => handleSetBookingType(val)} />
+        </React.Fragment>
+      )
+    } else if (currentStep === RsvpFormStepsEnum.GUEST_DETAILS) {
+      if (data.booking.type === BookingTypeEnum.INDIVIDUAL) {
+        return (
+          <React.Fragment>
+            {renderBackButton(RsvpFormStepsEnum.TYPE_SELECTION)}
+            <IndividualBookingForm
+              disabled={isSubmitting}
+              booking={data.booking}
+              guests={data.guests}
+              onBookingChange={(val) => updateBooking(val)}
+              onGuestsChange={(val) => updateGuests(val)}
+              onSubmit={handleFormSubmit}
+            />
+          </React.Fragment>
+        )
+      } else if (data.booking.type === BookingTypeEnum.FAMILY) {
+        return (
+          <React.Fragment>
+            {renderBackButton(RsvpFormStepsEnum.TYPE_SELECTION)}
+            <FamilyBookingForm
+              disabled={isSubmitting}
+              booking={data.booking}
+              guests={data.guests}
+              onBookingChange={(val) => updateBooking(val)}
+              onGuestsChange={(val) => updateGuests(val)}
+              onSubmit={handleFormSubmit}
+            />
+          </React.Fragment>
+        )
+      } else {
+        goToStep(RsvpFormStepsEnum.TYPE_SELECTION)
+        return null
+      }
+    } else if (currentStep === RsvpFormStepsEnum.CONFIRMATION) {
+      return 'confirmation'
+    } else {
+      return 'landing'
     }
-    setSubmitting(false)
   }
 
   return (
@@ -100,45 +172,7 @@ export default function Rsvp(props: RouteComponentProps) {
       </div>
       <Container maxWidth="lg" className={classes.container}>
         <img className={classes.ringImage} src={RingImage} />
-        {(!showForm || !booking.type) && (
-          <BookingTypeForm onSelect={(val) => handleSetBookingType(val)} />
-        )}
-        {showForm && booking.type && booking.type === BookingTypeEnum.INDIVIDUAL && (
-          <React.Fragment>
-            <div className={classes.formHeader}>
-              <Button color="primary" className={classes.backButton} onClick={() => setShowForm(false)}>
-                <KeyboardArrowLeftIcon />
-                Go back
-              </Button>
-            </div>
-            <IndividualBookingForm
-              disabled={isSubmitting}
-              booking={booking}
-              guests={guests}
-              onBookingChange={(val) => updateBooking(val)}
-              onGuestsChange={(val) => setGuests(val)}
-              onSubmit={handleFormSubmit}
-            />
-          </React.Fragment>
-        )}
-        {showForm && booking.type && booking.type === BookingTypeEnum.FAMILY && (
-          <React.Fragment>
-            <div className={classes.formHeader}>
-              <Button color="primary" className={classes.backButton} onClick={() => setShowForm(false)}>
-                <KeyboardArrowLeftIcon />
-                Go back
-              </Button>
-            </div>
-            <FamilyBookingForm
-              disabled={isSubmitting}
-              booking={booking}
-              guests={guests}
-              onBookingChange={(val) => updateBooking(val)}
-              onGuestsChange={(val) => setGuests(val)}
-              onSubmit={handleFormSubmit}
-            />
-          </React.Fragment>
-        )}
+        {renderFormStep()}
       </Container>
     </React.Fragment>
   )
