@@ -9,6 +9,7 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft'
 import BookingTypeForm from '../components/BookingTypeForm'
 import FamilyBookingForm from '../components/FamilyBookingForm'
 import IndividualBookingForm from '../components/IndividualBookingForm'
+import RsvpFormLanding from '../components/RsvpFormLanding'
 import { BookingApiModel, BookingTypeEnum } from '../services/bookingApi'
 import { GuestApiModel } from '../services/guestApi'
 import { deepMerge } from '../utils'
@@ -160,7 +161,7 @@ export default function Rsvp(props: RouteComponentProps) {
     } else if (currentStep === RsvpFormStepsEnum.CONFIRMATION) {
       return 'confirmation'
     } else {
-      return 'landing'
+      return <RsvpFormLanding />
     }
   }
 
