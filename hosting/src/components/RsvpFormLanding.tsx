@@ -13,11 +13,21 @@ import {
 const useStyles = makeStyles((theme) => ({
   title: {
     fontWeight: 'bolder',
-    textAlign: 'left',
+    textAlign: 'center',
+    letterSpacing: '2px',
+  },
+  heading: {
+    letterSpacing: '3px',
+    fontSize: '1.5rem',
+  },
+  content: {
+    fontSize: '1.75rem',
+    fontFamily: 'Timeless',
   },
   continueButton: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
+    marginTop: theme.spacing(10),
+    marginBottom: theme.spacing(10),
+    width: theme.spacing(30),
   },
 }))
 
@@ -27,22 +37,31 @@ export default function RsvpFormLanding() {
 
   return (
     <React.Fragment>
-      <Box component="div" display="flex" flexDirection="column">
-        <Typography className={classes.title} variant="body1" component="h1">Confirm physical attendance</Typography>
-        <Typography className={classes.title} variant="h5" component="h1">Event details:</Typography>
-        <Typography className={classes.title} variant="h5" component="h1">28 November 2020 Melbourne</Typography>
-        <Typography className={classes.title} variant="h5" component="h1">1PM AEDT</Typography>
-        <Typography className={classes.title} variant="h5" component="h1">IREC Melbourne</Typography>
-      </Box>
-      <Button
-        className={classes.continueButton}
-        variant="contained"
-        color="primary"
-        disableElevation
-        onClick={() => goToStep(RsvpFormStepsEnum.TYPE_SELECTION)}
+      <Typography className={classes.title} variant="body1" component="h1">Confirm physical attendance</Typography>
+      <Box
+        component="div"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        height="calc(100vh - 136px)"
       >
-        Continue
-      </Button>
+        <Typography className={classes.heading} variant="body1" component="h2">Event details:</Typography>
+        <Typography className={classes.content} variant="body1">
+          28 November 2020 <br />
+          1PM AEDT <br />
+          IREC Melbourne
+        </Typography>
+        <Button
+          className={classes.continueButton}
+          variant="contained"
+          color="primary"
+          disableElevation
+          onClick={() => goToStep(RsvpFormStepsEnum.TYPE_SELECTION)}
+        >
+          Continue
+        </Button>
+      </Box>
     </React.Fragment>
   )
 }
