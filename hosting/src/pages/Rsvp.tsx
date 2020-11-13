@@ -72,7 +72,6 @@ export default function Rsvp(props: RouteComponentProps) {
     currentStep,
     goToStep,
     submit,
-
   } = React.useContext(rsvpFormContext)
 
   const handleSetBookingType = (val: BookingTypeEnum) => {
@@ -133,7 +132,7 @@ export default function Rsvp(props: RouteComponentProps) {
       return (
         <React.Fragment>
           {renderBackButton(RsvpFormStepsEnum.TYPE_SELECTION)}
-          <RsvpFormConfirmation onSubmit={React.useCallback(handleFormSubmit, [])} />
+          <RsvpFormConfirmation onSubmit={handleFormSubmit} />
         </React.Fragment>
       )
     } else {
