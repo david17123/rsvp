@@ -48,7 +48,7 @@ export default function RsvpFormConfirmation(props: RsvpFormConfirmationProps) {
         <img className={classes.birdsImage} src={BirdsImage} />
         <Typography className={classes.title} variant="h5" component="h1">One last thing...</Typography>
         <Typography className={classes.message} variant="body1">
-          Due to COVID-19 restrictions, physical spots are limited. Please click
+          Due to COVID-19 restrictions, <strong>physical spots are limited</strong>. Please click
           confirm only if you know you can attend. Thank you for understanding! 😊
         </Typography>
       </Box>
