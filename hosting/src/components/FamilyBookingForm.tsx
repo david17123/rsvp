@@ -14,8 +14,12 @@ import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
-import { BookingApiModel } from '../services/bookingApi'
 import { GuestApiModel } from '../services/guestApi'
+import {
+  rsvpFormContext,
+  RsvpFormStepsEnum,
+  RsvpFormData,
+} from '../services/RsvpFormContext'
 import { isValidEmail } from '../utils'
 
 const useStyles = makeStyles((theme) => ({
@@ -39,24 +43,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function FamilyBookingForm(props: FamilyBookingFormProps) {
+export default function FamilyBookingForm() {
   const classes = useStyles()
   const [familyOf, setFamilyOf] = React.useState<number>(1)
   const [errors, setErrors] = React.useState<FormError>({})
+  const {
+    data,
+    setData,
+    isSubmitting,
+    goToStep,
+  } = React.useContext(rsvpFormContext)
 
-  const handleBookingChange = (updateBookingObject: Partial<BookingApiModel>) => {
-    return props.onBookingChange({
-      ...props.booking,
-      ...updateBookingObject,
-    })
-  }
-
-  const handleGuestChange = (updateGuestObject: Partial<GuestApiModel>, index: number) => {
-    if (props.guests.length < index && index !== 0) {
+  const updateGuestListPayload = (updateGuestObject: Partial<GuestApiModel>, index: number) => {
+    if (data.guests.length < index && index !== 0) {
       throw new Error(`Index guest to update is out of range: ${index}`)
     }
 
-    let updatedGuests: Array<Partial<GuestApiModel>> = [ ...props.guests ]
+    let updatedGuests: Array<Partial<GuestApiModel>> = [ ...data.guests ]
     if (updatedGuests.length === 0) {
       updatedGuests = [{ isChild: false }] // First guest, who is the one making the booking, is assumed to be not a child
     }
@@ -65,7 +68,18 @@ export default function FamilyBookingForm(props: FamilyBookingFormProps) {
       ...updateGuestObject,
     }
 
-    return props.onGuestsChange(updatedGuests)
+    return updatedGuests
+  }
+
+  // Updates portion of booking details and/or replaces guests list with payload
+  const setDataPartial = (updatePayload: Partial<RsvpFormData>) => {
+    setData({
+      booking: {
+        ...data.booking,
+        ...(updatePayload.booking || {}),
+      },
+      guests: (updatePayload.guests || data.guests),
+    })
   }
 
   const getOrdinal = (n: number) => {
@@ -84,30 +98,32 @@ export default function FamilyBookingForm(props: FamilyBookingFormProps) {
       throw new Error(`Invalid family of value: ${value} (minimum 1)`)
     }
 
-    const updatedGuests = [ ...props.guests ]
+    const updatedGuests = [ ...data.guests ]
     while (updatedGuests.length < value) {
       updatedGuests.push({})
     }
-    props.onGuestsChange(updatedGuests.slice(0, value))
+    setDataPartial({
+      guests: updatedGuests.slice(0, value),
+    })
     setFamilyOf(value)
   }
 
   const handleSubmit = () => {
     const compiledErrors: FormError = {}
-    if (!props.booking.name) {
+    if (!data.booking.name) {
       compiledErrors.name = 'Name is required'
     }
-    if (!props.booking.email) {
+    if (!data.booking.email) {
       compiledErrors.email = 'Email is required'
-    } else if (!isValidEmail(props.booking.email)) {
+    } else if (!isValidEmail(data.booking.email)) {
       compiledErrors.email = 'Email is invalid'
     }
 
-    if (familyOf > 1 && props.guests.length > 0) {
+    if (familyOf > 1 && data.guests.length > 0) {
       const familyMemberErrors: Array<FamilyMemberError> = []
       for (let i = 0; i < familyOf - 1; i += 1) {
         familyMemberErrors.push({})
-        const familyMemberGuest = props.guests[i + 1]
+        const familyMemberGuest = data.guests[i + 1]
         if (!familyMemberGuest.name) {
           familyMemberErrors[i].name = 'Name is required'
         }
@@ -123,7 +139,7 @@ export default function FamilyBookingForm(props: FamilyBookingFormProps) {
     setErrors(compiledErrors)
 
     if (Object.keys(compiledErrors).length === 0) {
-      props.onSubmit()
+      goToStep(RsvpFormStepsEnum.CONFIRMATION)
     }
   }
 
@@ -149,11 +165,15 @@ export default function FamilyBookingForm(props: FamilyBookingFormProps) {
             id="full-name"
             label="Full name"
             required
-            value={props.guests.length >= i + 1 && props.guests[i].name ? props.guests[i].name : ''}
-            onChange={(event) => handleGuestChange({ name: event.target.value }, i)}
+            value={data.guests.length >= i + 1 && data.guests[i].name ? data.guests[i].name : ''}
+            onChange={(event) => {
+              setDataPartial({
+                guests: updateGuestListPayload({ name: event.target.value }, i),
+              })
+            }}
             error={errors.familyMembers && errors.familyMembers.length >= i && !!errors.familyMembers[i - 1].name}
             helperText={errors.familyMembers && errors.familyMembers.length >= i && errors.familyMembers[i - 1].name}
-            disabled={props.disabled}
+            disabled={isSubmitting}
           />
           <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
           <TextField
@@ -163,21 +183,34 @@ export default function FamilyBookingForm(props: FamilyBookingFormProps) {
             variant="outlined"
             multiline
             rows={3}
-            value={props.guests.length >= i + 1 && props.guests[i].dietaryRequirements ? props.guests[i].dietaryRequirements : ''}
-            onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, i)}
-            disabled={props.disabled}
+            value={data.guests.length >= i + 1 && data.guests[i].dietaryRequirements ? data.guests[i].dietaryRequirements : ''}
+            onChange={(event) => {
+              setDataPartial({
+                guests: updateGuestListPayload({ dietaryRequirements: event.target.value }, i),
+              })
+            }}
+            disabled={isSubmitting}
           />
           <FormControl
             component="fieldset"
             error={!!errors.familyMembers && errors.familyMembers.length >= i && !!errors.familyMembers[i - 1].isChild}
             required
-            disabled={props.disabled}
+            disabled={isSubmitting}
           >
             <FormLabel className={classes.formLabel}>Is this family member under 7 yo?</FormLabel>
             {!!errors.familyMembers && errors.familyMembers.length >= i && !!errors.familyMembers[i - 1].isChild && (
               <FormHelperText error>{errors.familyMembers && errors.familyMembers.length >= i && errors.familyMembers[i - 1].isChild}</FormHelperText>
             )}
-            <RadioGroup aria-label="Plus one" name="customized-radios" value={isChildToText(props.guests[i].isChild)} onChange={(event) => handleGuestChange({ isChild: event.target.value === 'yes' }, i)}>
+            <RadioGroup
+              aria-label="Plus one"
+              name="customized-radios"
+              value={isChildToText(data.guests[i].isChild)}
+              onChange={(event) => {
+                setDataPartial({
+                  guests: updateGuestListPayload({ isChild: event.target.value === 'yes' }, i),
+                })
+              }}
+            >
               <FormControlLabel className={classes.radioOptionContainer} value="yes" control={<Radio color="primary" />} label="Yes" />
               <FormControlLabel className={classes.radioOptionContainer} value="none" control={<Radio color="primary" />} label="None" />
             </RadioGroup>
@@ -197,27 +230,32 @@ export default function FamilyBookingForm(props: FamilyBookingFormProps) {
           className={classes.textFields}
           id="full-name"
           label="Full name"
-          value={props.booking.name || ''}
+          value={data.booking.name || ''}
           onChange={(event) => {
-            handleBookingChange({ name: event.target.value })
-            handleGuestChange({ name: event.target.value }, 0)
+            const updatedGuestList = updateGuestListPayload({ name: event.target.value }, 0)
+            setDataPartial({
+              booking: { name: event.target.value },
+              guests: updatedGuestList,
+            })
           }}
           error={!!errors.name}
           helperText={errors.name}
           required
-          disabled={props.disabled}
+          disabled={isSubmitting}
         />
         <TextField
           className={classes.textFields}
           id="email"
           label="Email address"
           type="email"
-          value={props.booking.email || ''}
-          onChange={(event) => handleBookingChange({ email: event.target.value })}
+          value={data.booking.email || ''}
+          onChange={(event) => setDataPartial({
+            booking: { email: event.target.value },
+          })}
           error={!!errors.email}
           helperText={errors.email}
           required
-          disabled={props.disabled}
+          disabled={isSubmitting}
         />
         <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
         <TextField
@@ -227,9 +265,13 @@ export default function FamilyBookingForm(props: FamilyBookingFormProps) {
           variant="outlined"
           multiline
           rows={3}
-          value={props.guests.length > 0 ? props.guests[0].dietaryRequirements : ''}
-          onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, 0)}
-          disabled={true}
+          value={data.guests.length > 0 ? data.guests[0].dietaryRequirements : ''}
+          onChange={(event) => {
+            setDataPartial({
+              guests: updateGuestListPayload({ dietaryRequirements: event.target.value }, 0),
+            })
+          }}
+          disabled={isSubmitting}
         />
 
         <FormLabel className={classes.formLabel}>You are a family of&hellip;</FormLabel>
@@ -238,7 +280,7 @@ export default function FamilyBookingForm(props: FamilyBookingFormProps) {
             id="family-of"
             value={familyOf}
             onChange={(event) => handleFamilyOfChange(event.target.value as number)}
-            disabled={props.disabled}
+            disabled={isSubmitting}
           >
             <MenuItem value={1}>
               <em>None</em>
@@ -258,22 +300,12 @@ export default function FamilyBookingForm(props: FamilyBookingFormProps) {
         color="primary"
         disableElevation
         onClick={handleSubmit}
-        disabled={props.disabled}
+        disabled={isSubmitting}
       >
-        All done!
+        Confirm attendance
       </Button>
     </React.Fragment>
   )
-}
-
-export interface FamilyBookingFormProps {
-  onBookingChange: (val: Partial<BookingApiModel>) => any,
-  onGuestsChange: (val: Array<Partial<GuestApiModel>>) => any,
-  onSubmit: () => any,
-  disabled: boolean,
-  booking: Partial<BookingApiModel>,
-  /** First element of guests array is always assumed to be the person making the booking */
-  guests: Array<Partial<GuestApiModel>>,
 }
 
 interface FormError {

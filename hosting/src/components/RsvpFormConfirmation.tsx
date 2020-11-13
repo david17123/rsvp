@@ -5,11 +5,6 @@ import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 
-import {
-  rsvpFormContext,
-  RsvpFormStepsEnum,
-} from '../services/RsvpFormContext'
-
 const useStyles = makeStyles((theme) => ({
   title: {
     fontWeight: 'bolder',
@@ -21,28 +16,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function RsvpFormLanding() {
+export default function RsvpFormConfirmation(props: RsvpFormConfirmationProps) {
   const classes = useStyles()
-  const { goToStep } = React.useContext(rsvpFormContext)
 
   return (
     <React.Fragment>
       <Box component="div" display="flex" flexDirection="column">
         <Typography className={classes.title} variant="body1" component="h1">Confirm physical attendance</Typography>
-        <Typography className={classes.title} variant="h5" component="h1">Event details:</Typography>
-        <Typography className={classes.title} variant="h5" component="h1">28 November 2020 Melbourne</Typography>
-        <Typography className={classes.title} variant="h5" component="h1">1PM AEDT</Typography>
-        <Typography className={classes.title} variant="h5" component="h1">IREC Melbourne</Typography>
+        <Typography className={classes.title} variant="h5" component="h1">One last thing...</Typography>
+        <Typography className={classes.title} variant="body1">
+          Due to COVID-19 restrictions, physical spots are limited. Please click
+          confirm only if you know you can attend. Thank you for understanding! 😊
+        </Typography>
       </Box>
       <Button
         className={classes.continueButton}
         variant="contained"
         color="primary"
         disableElevation
-        onClick={() => goToStep(RsvpFormStepsEnum.TYPE_SELECTION)}
+        onClick={props.onSubmit}
       >
         Continue
       </Button>
+      <Button
+        className={classes.continueButton}
+        variant="contained"
+        color="secondary"
+        disableElevation
+        onClick={() => alert('TODO Do something!')}
+      >
+        Cancel
+      </Button>
     </React.Fragment>
   )
+}
+
+interface RsvpFormConfirmationProps {
+  onSubmit: () => Promise<void>,
 }

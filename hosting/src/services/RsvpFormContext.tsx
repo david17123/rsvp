@@ -5,8 +5,9 @@ import {
 import { BookingApiModel, addBooking } from './bookingApi'
 import { GuestApiModel, addGuests } from './guestApi'
 
-interface RsvpFormData {
+export interface RsvpFormData {
   booking: Partial<BookingApiModel>,
+  /** First element of guests array is always assumed to be the person making the booking */
   guests: Array<Partial<GuestApiModel>>
 }
 

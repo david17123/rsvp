@@ -10,9 +10,8 @@ import BookingTypeForm from '../components/BookingTypeForm'
 import FamilyBookingForm from '../components/FamilyBookingForm'
 import IndividualBookingForm from '../components/IndividualBookingForm'
 import RsvpFormLanding from '../components/RsvpFormLanding'
-import { BookingApiModel, BookingTypeEnum } from '../services/bookingApi'
-import { GuestApiModel } from '../services/guestApi'
-import { deepMerge } from '../utils'
+import RsvpFormConfirmation from '../components/RsvpFormConfirmation'
+import { BookingTypeEnum } from '../services/bookingApi'
 import { routePaths } from '../Routes'
 import {
   rsvpFormContext,
@@ -73,22 +72,8 @@ export default function Rsvp(props: RouteComponentProps) {
     currentStep,
     goToStep,
     submit,
-    isSubmitting,
+
   } = React.useContext(rsvpFormContext)
-
-  const updateBooking = (updateObject: Partial<BookingApiModel>) => {
-    setData({
-      ...data,
-      booking: deepMerge({ ...data.booking }, updateObject),
-    })
-  }
-
-  const updateGuests = (guests: Array<Partial<GuestApiModel>>) => {
-    setData({
-      ...data,
-      guests,
-    })
-  }
 
   const handleSetBookingType = (val: BookingTypeEnum) => {
     setData({
@@ -130,28 +115,14 @@ export default function Rsvp(props: RouteComponentProps) {
         return (
           <React.Fragment>
             {renderBackButton(RsvpFormStepsEnum.TYPE_SELECTION)}
-            <IndividualBookingForm
-              disabled={isSubmitting}
-              booking={data.booking}
-              guests={data.guests}
-              onBookingChange={(val) => updateBooking(val)}
-              onGuestsChange={(val) => updateGuests(val)}
-              onSubmit={handleFormSubmit}
-            />
+            <IndividualBookingForm />
           </React.Fragment>
         )
       } else if (data.booking.type === BookingTypeEnum.FAMILY) {
         return (
           <React.Fragment>
             {renderBackButton(RsvpFormStepsEnum.TYPE_SELECTION)}
-            <FamilyBookingForm
-              disabled={isSubmitting}
-              booking={data.booking}
-              guests={data.guests}
-              onBookingChange={(val) => updateBooking(val)}
-              onGuestsChange={(val) => updateGuests(val)}
-              onSubmit={handleFormSubmit}
-            />
+            <FamilyBookingForm />
           </React.Fragment>
         )
       } else {
@@ -159,7 +130,12 @@ export default function Rsvp(props: RouteComponentProps) {
         return null
       }
     } else if (currentStep === RsvpFormStepsEnum.CONFIRMATION) {
-      return 'confirmation'
+      return (
+        <React.Fragment>
+          {renderBackButton(RsvpFormStepsEnum.TYPE_SELECTION)}
+          <RsvpFormConfirmation onSubmit={React.useCallback(handleFormSubmit, [])} />
+        </React.Fragment>
+      )
     } else {
       return <RsvpFormLanding />
     }
