@@ -4,7 +4,7 @@ import { db } from '../../admin'
 import { Booking } from '../../models/booking'
 import * as ControllerTypes from './controllerTypes'
 import Mailer from '../../services/mailer'
-import { sendMarkdownMessage } from '../../services/slack'
+// import { sendMarkdownMessage } from '../../services/slack'
 
 export const readBooking = async (req: ControllerTypes.ReadBookingRequest, res: Response) => {
   try {

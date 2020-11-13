@@ -3,8 +3,8 @@ import { Response } from 'express'
 import { db } from '../../admin'
 import { Guest, GuestUpdate } from '../../models/guest'
 import * as ControllerTypes from './controllerTypes'
-import Mailer from '../../services/mailer'
-import { sendMarkdownMessage } from '../../services/slack'
+// import Mailer from '../../services/mailer'
+// import { sendMarkdownMessage } from '../../services/slack'
 
 export const readGuest = async (req: ControllerTypes.ReadGuestRequest, res: Response) => {
   try {
