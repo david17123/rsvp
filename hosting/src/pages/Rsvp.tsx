@@ -72,6 +72,7 @@ export default function Rsvp(props: RouteComponentProps) {
     currentStep,
     goToStep,
     submit,
+    isSubmitting,
   } = React.useContext(rsvpFormContext)
 
   const handleSetBookingType = (val: BookingTypeEnum) => {
@@ -93,7 +94,12 @@ export default function Rsvp(props: RouteComponentProps) {
   const renderBackButton = (targetStep: RsvpFormStepsEnum): JSX.Element => {
     return (
       <div className={classes.formHeader}>
-        <Button color="primary" className={classes.backButton} onClick={() => goToStep(targetStep)}>
+        <Button
+          color="primary"
+          className={classes.backButton}
+          onClick={() => goToStep(targetStep)}
+          disabled={isSubmitting}
+        >
           <KeyboardArrowLeftIcon />
           Go back
         </Button>
