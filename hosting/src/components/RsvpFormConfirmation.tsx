@@ -5,6 +5,10 @@ import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 
+import {
+  rsvpFormContext,
+} from '../services/RsvpFormContext'
+
 const BirdsImage = require('../assets/ring_icon.svg').default as string
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +46,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RsvpFormConfirmation(props: RsvpFormConfirmationProps) {
   const classes = useStyles()
+  const {
+    data,
+    submit,
+    isSubmitting,
+  } = React.useContext(rsvpFormContext)
 
   return (
     <React.Fragment>
@@ -65,7 +74,8 @@ export default function RsvpFormConfirmation(props: RsvpFormConfirmationProps) {
           variant="contained"
           color="primary"
           disableElevation
-          onClick={props.onSubmit}
+          disabled={isSubmitting}
+          onClick={() => submit(data)}
         >
           Yes, I can attend!
         </Button>
@@ -74,6 +84,7 @@ export default function RsvpFormConfirmation(props: RsvpFormConfirmationProps) {
           variant="outlined"
           color="primary"
           disableElevation
+          disabled={isSubmitting}
           onClick={() => alert('TODO Do something!')}
         >
           Cancel
