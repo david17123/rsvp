@@ -39,4 +39,4 @@ export enum RsvpFormStepsEnum {
   CONFIRMATION = 'confirmation',
 }
 export const rsvpFormContext = createFormContext(initialData)
-export const RsvpFormContextProvider = createFormContextProvider(rsvpFormContext, handleSubmit, initialData, RsvpFormStepsEnum.LANDING)
+export const RsvpFormContextProvider = createFormContextProvider(rsvpFormContext, handleSubmit, initialData, RsvpFormStepsEnum.CONFIRMATION)

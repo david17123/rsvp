@@ -131,7 +131,7 @@ export default function Rsvp(props: RouteComponentProps) {
     } else if (currentStep === RsvpFormStepsEnum.CONFIRMATION) {
       return (
         <React.Fragment>
-          {renderBackButton(RsvpFormStepsEnum.TYPE_SELECTION)}
+          {renderBackButton(RsvpFormStepsEnum.GUEST_DETAILS)}
           <RsvpFormConfirmation onSubmit={handleFormSubmit} />
         </React.Fragment>
       )
