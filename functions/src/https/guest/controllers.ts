@@ -115,9 +115,9 @@ export const addGuest = async (req: ControllerTypes.AddGuestRequest, res: Respon
 
     // Send notification
     if (addedGuests.length > 0) {
-      const mailer = new Mailer()
-      await mailer.sendEmailTemplate(Mailer.RSVP_GUEST_ADDED_TEMPLATE_ID, { addedGuests }, bookingEmail)
-      await sendMarkdownMessage(`*${addedGuests.length} guests* have been added to RSVP`)
+      // const mailer = new Mailer()
+      // await mailer.sendEmailTemplate(Mailer.RSVP_GUEST_ADDED_TEMPLATE_ID, { addedGuests }, bookingEmail)
+      // await sendMarkdownMessage(`*${addedGuests.length} guests* have been added to RSVP`)
     }
 
     res.json({

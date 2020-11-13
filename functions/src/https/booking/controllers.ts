@@ -69,7 +69,7 @@ export const addBooking = async (req: ControllerTypes.AddBookingRequest, res: Re
     await mailer.createOrUpdateContact(email, name, undefined, [Mailer.RSVP_GUESTS_LIST_ID])
 
     // Send notification
-    await sendMarkdownMessage(`New RSVP booking: *${name} (${email})*`)
+    // await sendMarkdownMessage(`New RSVP booking: *${name} (${email})*`)
 
     res.json(newBooking)
   } catch (e) {
