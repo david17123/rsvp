@@ -20,7 +20,7 @@ export function UserProvider(props: UserContextProviderProps) {
 }
 
 export interface UserContextProviderProps {
-  children: React.ReactNode[]
+  children: React.ReactNode | React.ReactNode[]
 }
 
 export interface UserContextValue {

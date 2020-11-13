@@ -3,6 +3,8 @@ import { Response } from 'express'
 import { db } from '../../admin'
 import { Guest, GuestUpdate } from '../../models/guest'
 import * as ControllerTypes from './controllerTypes'
+import Mailer from '../../services/mailer'
+import { sendMarkdownMessage } from '../../services/slack'
 
 export const readGuest = async (req: ControllerTypes.ReadGuestRequest, res: Response) => {
   try {
@@ -110,6 +112,14 @@ export const addGuest = async (req: ControllerTypes.AddGuestRequest, res: Respon
     })
 
     await Promise.all(addGuestPromises)
+
+    // Send notification
+    if (addedGuests.length > 0) {
+      // const mailer = new Mailer()
+      // await mailer.sendEmailTemplate(Mailer.RSVP_GUEST_ADDED_TEMPLATE_ID, { addedGuests }, bookingEmail)
+      // await sendMarkdownMessage(`*${addedGuests.length} guests* have been added to RSVP`)
+    }
+
     res.json({
       addedGuests,
       ignoredGuests,

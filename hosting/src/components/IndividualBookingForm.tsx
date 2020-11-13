@@ -12,8 +12,12 @@ import RadioGroup from '@material-ui/core/RadioGroup'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
-import { BookingApiModel } from '../services/bookingApi'
 import { GuestApiModel } from '../services/guestApi'
+import {
+  rsvpFormContext,
+  RsvpFormStepsEnum,
+  RsvpFormData,
+} from '../services/RsvpFormContext'
 import { isValidEmail } from '../utils'
 
 const useStyles = makeStyles((theme) => ({
@@ -37,24 +41,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function IndividualBookingForm(props: IndividualBookingFormProps) {
+export default function IndividualBookingForm() {
   const classes = useStyles()
   const [hasPlusOne, setHasPlusOne] = React.useState<'yes' | 'none' | ''>('')
   const [errors, setErrors] = React.useState<FormError>({})
+  const {
+    data,
+    setData,
+    isSubmitting,
+    goToStep,
+  } = React.useContext(rsvpFormContext)
 
-  const handleBookingChange = (updateBookingObject: Partial<BookingApiModel>) => {
-    return props.onBookingChange({
-      ...props.booking,
-      ...updateBookingObject,
-    })
-  }
-
-  const handleGuestChange = (updateGuestObject: Partial<GuestApiModel>, index: number) => {
-    if (props.guests.length < index && index !== 0) {
+  const updateGuestListPayload = (updateGuestObject: Partial<GuestApiModel>, index: number) => {
+    if (data.guests.length < index && index !== 0) {
       throw new Error(`Index guest to update is out of range: ${index}`)
     }
 
-    let updatedGuests: Array<Partial<GuestApiModel>> = [ ...props.guests ]
+    let updatedGuests: Array<Partial<GuestApiModel>> = [ ...data.guests ]
     if (updatedGuests.length === 0) {
       updatedGuests = [{ isChild: false }] // First guest, who is the one making the booking, is assumed to be not a child
     }
@@ -63,41 +66,56 @@ export default function IndividualBookingForm(props: IndividualBookingFormProps)
       ...updateGuestObject,
     }
 
-    return props.onGuestsChange(updatedGuests)
+    return updatedGuests
+  }
+
+  // Updates portion of booking details and/or replaces guests list with payload
+  const setDataPartial = (updatePayload: Partial<RsvpFormData>) => {
+    setData({
+      booking: {
+        ...data.booking,
+        ...(updatePayload.booking || {}),
+      },
+      guests: (updatePayload.guests || data.guests),
+    })
   }
 
   const handlePlusOneChange = (value: 'yes' | 'none') => {
     if (value === 'yes') {
-      const updatedGuests = [ ...props.guests ]
+      const updatedGuests = [ ...data.guests ]
       if (updatedGuests.length === 0) {
         updatedGuests.push({ isChild: false }) // Guests of individual booking is assumed to be not a child
       }
       if (updatedGuests.length === 1) {
         updatedGuests.push({ isChild: false }) // Guests of individual booking is assumed to be not a child
       }
-      props.onGuestsChange(updatedGuests)
+      setDataPartial({
+        guests: updatedGuests,
+      })
     } else {
-      props.onGuestsChange(props.guests.slice(0, 1))
+      setDataPartial({
+        guests: data.guests.slice(0, 1),
+      })
     }
     setHasPlusOne(value)
   }
 
   const handleSubmit = () => {
     const compiledErrors: FormError = {}
-    if (!props.booking.name) {
+    if (!data.booking.name) {
       compiledErrors.name = 'Name is required'
     }
-    if (!props.booking.email) {
+    if (!data.booking.email) {
       compiledErrors.email = 'Email is required'
-    } else if (!isValidEmail(props.booking.email)) {
+    } else if (!isValidEmail(data.booking.email)) {
       compiledErrors.email = 'Email is invalid'
     }
     if (hasPlusOne === '') {
       compiledErrors.hasPlusOne = 'This field is required'
     }
 
-    if (hasPlusOne === 'yes' && props.guests.length > 1) {
-      const guest = props.guests[1]
+    if (hasPlusOne === 'yes' && data.guests.length > 1) {
+      const guest = data.guests[1]
       const plusOneErrors: PlusOneError = {}
       if (!guest.name) {
         plusOneErrors.name = 'Name is required'
@@ -110,7 +128,7 @@ export default function IndividualBookingForm(props: IndividualBookingFormProps)
     setErrors(compiledErrors)
 
     if (Object.keys(compiledErrors).length === 0) {
-      props.onSubmit()
+      goToStep(RsvpFormStepsEnum.CONFIRMATION)
     }
   }
 
@@ -122,27 +140,32 @@ export default function IndividualBookingForm(props: IndividualBookingFormProps)
           className={classes.textFields}
           id="full-name"
           label="Full name"
-          value={props.booking.name || ''}
+          value={data.booking.name || ''}
           onChange={(event) => {
-            handleBookingChange({ name: event.target.value })
-            handleGuestChange({ name: event.target.value }, 0)
+            const updatedGuestList = updateGuestListPayload({ name: event.target.value }, 0)
+            setDataPartial({
+              booking: { name: event.target.value },
+              guests: updatedGuestList,
+            })
           }}
           error={!!errors.name}
           helperText={errors.name}
           required
-          disabled={props.disabled}
+          disabled={isSubmitting}
         />
         <TextField
           className={classes.textFields}
           id="email"
           label="Email address"
           type="email"
-          value={props.booking.email || ''}
-          onChange={(event) => handleBookingChange({ email: event.target.value })}
+          value={data.booking.email || ''}
+          onChange={(event) => setDataPartial({
+            booking: { email: event.target.value },
+          })}
           error={!!errors.email}
           helperText={errors.email}
           required
-          disabled={props.disabled}
+          disabled={isSubmitting}
         />
         <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
         <TextField
@@ -152,15 +175,19 @@ export default function IndividualBookingForm(props: IndividualBookingFormProps)
           variant="outlined"
           multiline
           rows={3}
-          value={props.guests.length > 0 ? props.guests[0].dietaryRequirements : ''}
-          onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, 0)}
-          disabled={props.disabled}
+          value={data.guests.length > 0 ? data.guests[0].dietaryRequirements : ''}
+          onChange={(event) => {
+            setDataPartial({
+              guests: updateGuestListPayload({ dietaryRequirements: event.target.value }, 0),
+            })
+          }}
+          disabled={isSubmitting}
         />
         <FormControl
           component="fieldset"
           error={!!errors.hasPlusOne}
           required
-          disabled={props.disabled}
+          disabled={isSubmitting}
         >
           <FormLabel className={classes.formLabel}>Will you be inviting a +1?</FormLabel>
           {!!errors.hasPlusOne && <FormHelperText error>{errors.hasPlusOne}</FormHelperText>}
@@ -179,11 +206,15 @@ export default function IndividualBookingForm(props: IndividualBookingFormProps)
             id="full-name"
             label="Full name"
             required
-            value={props.guests.length >= 2 && props.guests[1].name ? props.guests[1].name : ''}
-            onChange={(event) => handleGuestChange({ name: event.target.value }, 1)}
+            value={data.guests.length >= 2 && data.guests[1].name ? data.guests[1].name : ''}
+            onChange={(event) => {
+              setDataPartial({
+                guests: updateGuestListPayload({ name: event.target.value }, 1),
+              })
+            }}
             error={errors.plusOne && !!errors.plusOne.name}
             helperText={errors.plusOne && errors.plusOne.name}
-            disabled={props.disabled}
+            disabled={isSubmitting}
           />
           <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
           <TextField
@@ -193,9 +224,13 @@ export default function IndividualBookingForm(props: IndividualBookingFormProps)
             variant="outlined"
             multiline
             rows={3}
-            value={props.guests.length >= 2 && props.guests[1].dietaryRequirements ? props.guests[1].dietaryRequirements : ''}
-            onChange={(event) => handleGuestChange({ dietaryRequirements: event.target.value }, 1)}
-            disabled={props.disabled}
+            value={data.guests.length >= 2 && data.guests[1].dietaryRequirements ? data.guests[1].dietaryRequirements : ''}
+            onChange={(event) => {
+              setDataPartial({
+                guests: updateGuestListPayload({ dietaryRequirements: event.target.value }, 1),
+              })
+            }}
+            disabled={isSubmitting}
           />
         </Box>
       )}
@@ -205,22 +240,12 @@ export default function IndividualBookingForm(props: IndividualBookingFormProps)
         color="primary"
         disableElevation
         onClick={handleSubmit}
-        disabled={props.disabled}
+        disabled={isSubmitting}
       >
-        All done!
+        Confirm attendance
       </Button>
     </React.Fragment>
   )
-}
-
-export interface IndividualBookingFormProps {
-  onBookingChange: (val: Partial<BookingApiModel>) => any,
-  onGuestsChange: (val: Array<Partial<GuestApiModel>>) => any,
-  onSubmit: () => any,
-  disabled: boolean,
-  booking: Partial<BookingApiModel>,
-  /** First element of guests array is always assumed to be the person making the booking */
-  guests: Array<Partial<GuestApiModel>>,
 }
 
 interface FormError {
