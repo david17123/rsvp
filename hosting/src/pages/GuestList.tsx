@@ -13,7 +13,6 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import TableSortLabel from '@material-ui/core/TableSortLabel'
 import { makeStyles } from '@material-ui/core/styles'
-import ChildCareIcon from '@material-ui/icons/ChildCare'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 
@@ -24,11 +23,6 @@ import { UserContext } from '../services/UserContext'
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
-  },
-  childIcon: {
-    verticalAlign: 'text-top',
-    height: theme.spacing(2),
-    marginLeft: theme.spacing(0.5),
   },
   disabledRow: {
     backgroundColor: theme.palette.grey[200],
@@ -44,14 +38,14 @@ export default function GuestList() {
   const classes = useStyles({})
   const [guests, setGuests] = React.useState<Array<GuestApiModel>>([])
   const [loading, setLoading] = React.useState<boolean>(true)
-  const [sortBy, setSortBy] = React.useState<'name' | 'date'>('name')
+  const [sortBy, setSortBy] = React.useState<'firstName' | 'lastName' | 'date'>('firstName')
   const [sortIsAscending, setSortIsAscending] = React.useState<boolean>(true)
   const userContext = React.useContext(UserContext)
   React.useEffect(() => {
     fetchGuests() // tslint:disable-line no-floating-promises
   }, [userContext.loading])
 
-  const handleTableHeaderClick = (label: 'name' | 'date') => {
+  const handleTableHeaderClick = (label: 'firstName' | 'lastName' | 'date') => {
     if (sortBy === label) {
       setSortIsAscending(!sortIsAscending)
     } else {
@@ -81,17 +75,23 @@ export default function GuestList() {
   }
 
   const handleDeleteGuest = async (guest: GuestApiModel) => {
-    await deleteGuest(guest.bookingEmail, guest.name)
+    await deleteGuest(guest.bookingEmail, guest.firstName, guest.lastName)
     await fetchGuests(false)
   }
 
   const getSortedGuests = () => {
     return guests.sort((guest1, guest2) => {
-      if (sortBy === 'name') {
-        if (guest1.name === guest2.name) {
+      if (sortBy === 'firstName') {
+        if (guest1.firstName === guest2.firstName) {
           return 0
         } else {
-          return (guest1.name > guest2.name ? 1 : -1) * (sortIsAscending ? 1 : -1)
+          return (guest1.firstName > guest2.firstName ? 1 : -1) * (sortIsAscending ? 1 : -1)
+        }
+      } else if (sortBy === 'lastName') {
+        if (guest1.lastName === guest2.lastName) {
+          return 0
+        } else {
+          return (guest1.lastName > guest2.lastName ? 1 : -1) * (sortIsAscending ? 1 : -1)
         }
       } else if (sortBy === 'date') {
         const date1 = guest1.addedDate.valueOf()
@@ -124,16 +124,24 @@ export default function GuestList() {
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell component="th" sortDirection={sortBy === 'name' ? (sortIsAscending ? 'asc' : 'desc') : false}>
+                  <TableCell component="th" sortDirection={sortBy === 'firstName' ? (sortIsAscending ? 'asc' : 'desc') : false}>
                     <TableSortLabel
-                      active={sortBy === 'name'}
+                      active={sortBy === 'firstName'}
                       direction={sortIsAscending ? 'asc' : 'desc'}
-                      onClick={() => handleTableHeaderClick('name')}
+                      onClick={() => handleTableHeaderClick('firstName')}
                     >
-                      Name
+                      First name
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell component="th">Dietary requirements</TableCell>
+                  <TableCell component="th" sortDirection={sortBy === 'lastName' ? (sortIsAscending ? 'asc' : 'desc') : false}>
+                    <TableSortLabel
+                      active={sortBy === 'lastName'}
+                      direction={sortIsAscending ? 'asc' : 'desc'}
+                      onClick={() => handleTableHeaderClick('lastName')}
+                    >
+                      Last name
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell component="th" sortDirection={sortBy === 'date' ? (sortIsAscending ? 'asc' : 'desc') : false}>
                     <TableSortLabel
                       active={sortBy === 'date'}
@@ -149,7 +157,7 @@ export default function GuestList() {
               <TableBody>
                 {getSortedGuests().map((guest: GuestApiModel) => (
                   <GuestRow
-                    key={guest.name}
+                    key={`${guest.firstName}|${guest.lastName}`}
                     guest={guest}
                     onDelete={handleDeleteGuest}
                     onEdit={() => { console.log('Edit handler placeholder') }}
@@ -179,12 +187,9 @@ const GuestRow = (props: GuestRowProps) => {
   }
 
   return (
-    <TableRow key={guest.name} className={disabled ? classes.disabledRow : ''}>
-      <TableCell className={classes.rowCell} scope="row">
-        {guest.name}
-        {guest.isChild && <ChildCareIcon className={classes.childIcon} />}
-      </TableCell>
-      <TableCell className={classes.rowCell}>{guest.dietaryRequirements}</TableCell>
+    <TableRow key={`${guest.firstName}|${guest.lastName}`} className={disabled ? classes.disabledRow : ''}>
+      <TableCell className={classes.rowCell} scope="row">{guest.firstName}</TableCell>
+      <TableCell className={classes.rowCell} scope="row">{guest.lastName}</TableCell>
       <TableCell className={classes.rowCell}>{guest.addedDate.toLocaleDateString()}</TableCell>
       <TableCell className={classes.rowCell} align="right">
         <IconButton disabled aria-label="edit" onClick={handleEdit}>

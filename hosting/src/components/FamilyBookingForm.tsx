@@ -3,13 +3,9 @@ import React from 'react'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import FormControl from '@material-ui/core/FormControl'
-import FormHelperText from '@material-ui/core/FormHelperText'
 import FormLabel from '@material-ui/core/FormLabel'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import { makeStyles } from '@material-ui/core/styles'
-import Radio from '@material-ui/core/Radio'
-import RadioGroup from '@material-ui/core/RadioGroup'
 import Select from '@material-ui/core/Select'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
@@ -34,9 +30,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
   },
-  radioOptionContainer: {
-    marginRight: theme.spacing(4),
-  },
   submitButton: {
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3),
@@ -45,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FamilyBookingForm() {
   const classes = useStyles()
-  const [familyOf, setFamilyOf] = React.useState<number>(1)
+  const [groupOf, setGroupOf] = React.useState<number>(1)
   const [errors, setErrors] = React.useState<FormError>({})
   const {
     data,
@@ -61,7 +54,7 @@ export default function FamilyBookingForm() {
 
     let updatedGuests: Array<Partial<GuestApiModel>> = [ ...data.guests ]
     if (updatedGuests.length === 0) {
-      updatedGuests = [{ isChild: false }] // First guest, who is the one making the booking, is assumed to be not a child
+      updatedGuests = [{}]
     }
     updatedGuests[index] = {
       ...updatedGuests[index],
@@ -93,9 +86,9 @@ export default function FamilyBookingForm() {
     return 'th'
   }
 
-  const handleFamilyOfChange = (value: number) => {
+  const handleGroupOfChange = (value: number) => {
     if (value <= 0) {
-      throw new Error(`Invalid family of value: ${value} (minimum 1)`)
+      throw new Error(`Invalid group of value: ${value} (minimum 1)`)
     }
 
     const updatedGuests = [ ...data.guests ]
@@ -105,13 +98,13 @@ export default function FamilyBookingForm() {
     setDataPartial({
       guests: updatedGuests.slice(0, value),
     })
-    setFamilyOf(value)
+    setGroupOf(value)
   }
 
   const handleSubmit = () => {
     const compiledErrors: FormError = {}
-    if (!data.booking.name) {
-      compiledErrors.name = 'Name is required'
+    if (!data.booking.firstName) {
+      compiledErrors.firstName = 'First name is required'
     }
     if (!data.booking.email) {
       compiledErrors.email = 'Email is required'
@@ -119,21 +112,18 @@ export default function FamilyBookingForm() {
       compiledErrors.email = 'Email is invalid'
     }
 
-    if (familyOf > 1 && data.guests.length > 0) {
-      const familyMemberErrors: Array<FamilyMemberError> = []
-      for (let i = 0; i < familyOf - 1; i += 1) {
-        familyMemberErrors.push({})
-        const familyMemberGuest = data.guests[i + 1]
-        if (!familyMemberGuest.name) {
-          familyMemberErrors[i].name = 'Name is required'
-        }
-        if (typeof familyMemberGuest.isChild !== 'boolean') {
-          familyMemberErrors[i].isChild = 'This field is required'
+    if (groupOf > 1 && data.guests.length > 0) {
+      const groupMemberErrors: Array<GroupMemberError> = []
+      for (let i = 0; i < groupOf - 1; i += 1) {
+        groupMemberErrors.push({})
+        const groupMemberGuest = data.guests[i + 1]
+        if (!groupMemberGuest.firstName) {
+          groupMemberErrors[i].firstName = 'First name is required'
         }
       }
 
-      if (familyMemberErrors.reduce((acc, famMemberErr) => Object.keys(famMemberErr).length > 0 || acc, false)) {
-        compiledErrors.familyMembers = familyMemberErrors
+      if (groupMemberErrors.reduce((acc, grpMemberErr) => Object.keys(grpMemberErr).length > 0 || acc, false)) {
+        compiledErrors.groupMembers = groupMemberErrors
       }
     }
     setErrors(compiledErrors)
@@ -144,77 +134,42 @@ export default function FamilyBookingForm() {
   }
 
   const renderGuestsForm = () => {
-    if (familyOf < 2) {
+    if (groupOf < 2) {
       return null
     }
 
-    const isChildToText = (isChild: boolean | undefined): string => {
-      if (typeof isChild === 'boolean') {
-        return isChild ? 'yes' : 'none'
-      }
-      return ''
-    }
-
     const forms = []
-    for (let i = 1; i < familyOf; i += 1) {
+    for (let i = 1; i < groupOf; i += 1) {
       forms.push(
         <Box key={i} component="div" display="flex" flexDirection="column" marginTop={3}>
           <Typography className={classes.title} variant="h5" component="h1">{i+1}<sup>{getOrdinal(i+1)}</sup> member</Typography>
           <TextField
             className={classes.textFields}
-            id="full-name"
-            label="Full name"
+            id="first-name"
+            label="First name"
             required
-            value={data.guests.length >= i + 1 && data.guests[i].name ? data.guests[i].name : ''}
+            value={data.guests.length >= i + 1 && data.guests[i].firstName ? data.guests[i].firstName : ''}
             onChange={(event) => {
               setDataPartial({
-                guests: updateGuestListPayload({ name: event.target.value }, i),
+                guests: updateGuestListPayload({ firstName: event.target.value }, i),
               })
             }}
-            error={errors.familyMembers && errors.familyMembers.length >= i && !!errors.familyMembers[i - 1].name}
-            helperText={errors.familyMembers && errors.familyMembers.length >= i && errors.familyMembers[i - 1].name}
+            error={errors.groupMembers && errors.groupMembers.length >= i && !!errors.groupMembers[i - 1].firstName}
+            helperText={errors.groupMembers && errors.groupMembers.length >= i && errors.groupMembers[i - 1].firstName}
             disabled={isSubmitting}
           />
-          <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
           <TextField
             className={classes.textFields}
-            id="dietary-requirement"
-            placeholder="Allergy, restrictions, etc."
-            variant="outlined"
-            multiline
-            rows={3}
-            value={data.guests.length >= i + 1 && data.guests[i].dietaryRequirements ? data.guests[i].dietaryRequirements : ''}
+            id="last-name"
+            label="Last name"
+            value={data.guests.length >= i + 1 && data.guests[i].lastName ? data.guests[i].lastName : ''}
             onChange={(event) => {
               setDataPartial({
-                guests: updateGuestListPayload({ dietaryRequirements: event.target.value }, i),
+                guests: updateGuestListPayload({ lastName: event.target.value }, i),
               })
             }}
             disabled={isSubmitting}
           />
-          <FormControl
-            component="fieldset"
-            error={!!errors.familyMembers && errors.familyMembers.length >= i && !!errors.familyMembers[i - 1].isChild}
-            required
-            disabled={isSubmitting}
-          >
-            <FormLabel className={classes.formLabel}>Is this family member under 7 yo?</FormLabel>
-            {!!errors.familyMembers && errors.familyMembers.length >= i && !!errors.familyMembers[i - 1].isChild && (
-              <FormHelperText error>{errors.familyMembers && errors.familyMembers.length >= i && errors.familyMembers[i - 1].isChild}</FormHelperText>
-            )}
-            <RadioGroup
-              aria-label="Plus one"
-              name="customized-radios"
-              value={isChildToText(data.guests[i].isChild)}
-              onChange={(event) => {
-                setDataPartial({
-                  guests: updateGuestListPayload({ isChild: event.target.value === 'yes' }, i),
-                })
-              }}
-            >
-              <FormControlLabel className={classes.radioOptionContainer} value="yes" control={<Radio color="primary" />} label="Yes" />
-              <FormControlLabel className={classes.radioOptionContainer} value="none" control={<Radio color="primary" />} label="None" />
-            </RadioGroup>
-          </FormControl>
         </Box>,
       )
     }
@@ -228,19 +183,33 @@ export default function FamilyBookingForm() {
         <Typography className={classes.title} variant="h5" component="h1">Your details</Typography>
         <TextField
           className={classes.textFields}
-          id="full-name"
-          label="Full name"
-          value={data.booking.name || ''}
+          id="first-name"
+          label="First name"
+          value={data.booking.firstName || ''}
           onChange={(event) => {
-            const updatedGuestList = updateGuestListPayload({ name: event.target.value }, 0)
+            const updatedGuestList = updateGuestListPayload({ firstName: event.target.value }, 0)
             setDataPartial({
-              booking: { name: event.target.value },
+              booking: { firstName: event.target.value },
               guests: updatedGuestList,
             })
           }}
-          error={!!errors.name}
-          helperText={errors.name}
+          error={!!errors.firstName}
+          helperText={errors.firstName}
           required
+          disabled={isSubmitting}
+        />
+        <TextField
+          className={classes.textFields}
+          id="last-name"
+          label="Last name"
+          value={data.booking.lastName || ''}
+          onChange={(event) => {
+            const updatedGuestList = updateGuestListPayload({ lastName: event.target.value }, 0)
+            setDataPartial({
+              booking: { lastName: event.target.value },
+              guests: updatedGuestList,
+            })
+          }}
           disabled={isSubmitting}
         />
         <TextField
@@ -257,29 +226,13 @@ export default function FamilyBookingForm() {
           required
           disabled={isSubmitting}
         />
-        <FormLabel className={classes.formLabel}>Dietary requirement</FormLabel>
-        <TextField
-          className={classes.textFields}
-          id="dietary-requirement"
-          placeholder="Allergy, restrictions, etc."
-          variant="outlined"
-          multiline
-          rows={3}
-          value={data.guests.length > 0 ? data.guests[0].dietaryRequirements : ''}
-          onChange={(event) => {
-            setDataPartial({
-              guests: updateGuestListPayload({ dietaryRequirements: event.target.value }, 0),
-            })
-          }}
-          disabled={isSubmitting}
-        />
 
-        <FormLabel className={classes.formLabel}>You are a family of&hellip;</FormLabel>
+        <FormLabel className={classes.formLabel}>You are a group of&hellip;</FormLabel>
         <FormControl variant="outlined">
           <Select
-            id="family-of"
-            value={familyOf}
-            onChange={(event) => handleFamilyOfChange(event.target.value as number)}
+            id="group-of"
+            value={groupOf}
+            onChange={(event) => handleGroupOfChange(event.target.value as number)}
             disabled={isSubmitting}
           >
             <MenuItem value={1}>
@@ -309,12 +262,11 @@ export default function FamilyBookingForm() {
 }
 
 interface FormError {
-  name?: string,
+  firstName?: string,
   email?: string,
-  familyMembers?: Array<FamilyMemberError>,
+  groupMembers?: Array<GroupMemberError>,
 }
 
-interface FamilyMemberError {
-  name?: string,
-  isChild?: string,
+interface GroupMemberError {
+  firstName?: string,
 }

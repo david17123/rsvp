@@ -8,12 +8,13 @@ import * as ControllerTypes from './controllerTypes'
 
 export const readGuest = async (req: ControllerTypes.ReadGuestRequest, res: Response) => {
   try {
-    const { bookingEmail, name } = req.body
+    const { bookingEmail, firstName, lastName } = req.body
 
     const guestCollection = db.collection('guest')
     const existingGuest = await guestCollection
       .where('bookingEmail', '==', bookingEmail)
-      .where('name', '==', name)
+      .where('firstName', '==', firstName)
+      .where('lastName', '==', lastName)
       .get()
     if (existingGuest.size !== 1) {
       throw new Error('Cannot find guest')
@@ -80,16 +81,16 @@ export const addGuest = async (req: ControllerTypes.AddGuestRequest, res: Respon
     guests.forEach((guest) => {
       const promise: Promise<Guest | null> = guestCollection
         .where('bookingEmail', '==', bookingEmail)
-        .where('name', '==', guest.name)
+        .where('firstName', '==', guest.firstName)
+        .where('lastName', '==', guest.lastName)
         .get()
         .then(async (existingGuest) => {
           if (!existingGuest.empty) {
             throw new Error('Guest already registered')
           } else {
             const newGuest: Guest = {
-              name: guest.name,
-              dietaryRequirements: guest.dietaryRequirements ? guest.dietaryRequirements : '',
-              isChild: !!guest.isChild,
+              firstName: guest.firstName,
+              lastName: guest.lastName,
               bookingEmail,
               addedDate: (new Date()).toISOString(),
             }
@@ -135,13 +136,14 @@ export const addGuest = async (req: ControllerTypes.AddGuestRequest, res: Respon
 
 export const editGuest = async (req: ControllerTypes.EditGuestRequest, res: Response) => {
   try {
-    const { bookingEmail, name, update } = req.body
+    const { bookingEmail, firstName, lastName, update } = req.body
     validateGuests([update])
 
     const guestCollection = db.collection('guest')
     const existingGuest = await guestCollection
       .where('bookingEmail', '==', bookingEmail)
-      .where('name', '==', name)
+      .where('firstName', '==', firstName)
+      .where('lastName', '==', lastName)
       .get()
     if (existingGuest.size !== 1) {
       throw new Error('Cannot find guest')
@@ -163,12 +165,13 @@ export const editGuest = async (req: ControllerTypes.EditGuestRequest, res: Resp
 
 export const deleteGuest = async (req: ControllerTypes.DeleteGuestRequest, res: Response) => {
   try {
-    const { bookingEmail, name } = req.body
+    const { bookingEmail, firstName, lastName } = req.body
 
     const guestCollection = db.collection('guest')
     const existingGuest = await guestCollection
       .where('bookingEmail', '==', bookingEmail)
-      .where('name', '==', name)
+      .where('firstName', '==', firstName)
+      .where('lastName', '==', lastName)
       .get()
     if (existingGuest.size !== 1) {
       throw new Error('Cannot find guest')
@@ -197,13 +200,16 @@ const validateGuests = (guests: Array<Partial<GuestUpdate>>) => {
   // Check that all guest has name and they are all unique
   const guestNamesHash: {[key: string]: boolean} = {}
   for (const guest of guests) {
-    if (!guest.name) {
-      throw new Error('Guest must have name')
+    if (!guest.firstName) {
+      throw new Error('Guest must have first name')
     }
 
-    if (guestNamesHash[guest.name]) {
-      throw new Error(`Duplicate guest names: ${guest.name}`)
+    const guestNameHashKey = `${guest.firstName}|${guest.lastName || ''}`
+    const guestFullName = guest.firstName + (guest.lastName ? ' ' : '') + guest.lastName
+
+    if (guestNamesHash[guestNameHashKey]) {
+      throw new Error(`Duplicate guest names: ${guestFullName}`)
     }
-    guestNamesHash[guest.name] = true
+    guestNamesHash[guestNameHashKey] = true
   }
 }

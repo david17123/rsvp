@@ -24,11 +24,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
   },
-  childIcon: {
-    verticalAlign: 'text-top',
-    height: theme.spacing(2),
-    marginLeft: theme.spacing(0.5),
-  },
   disabledRow: {
     backgroundColor: theme.palette.grey[200],
     opacity: 0.5,
@@ -43,14 +38,14 @@ export default function BookingList() {
   const classes = useStyles({})
   const [bookings, setBookings] = React.useState<Array<BookingApiModel>>([])
   const [loading, setLoading] = React.useState<boolean>(true)
-  const [sortBy, setSortBy] = React.useState<'name' | 'email' | 'date'>('name')
+  const [sortBy, setSortBy] = React.useState<'firstName' | 'lastName' | 'email' | 'date'>('firstName')
   const [sortIsAscending, setSortIsAscending] = React.useState<boolean>(true)
   const userContext = React.useContext(UserContext)
   React.useEffect(() => {
     fetchBookings() // tslint:disable-line no-floating-promises
   }, [userContext.loading])
 
-  const handleTableHeaderClick = (label: 'name' | 'email' | 'date') => {
+  const handleTableHeaderClick = (label: 'firstName' | 'lastName' | 'email' | 'date') => {
     if (sortBy === label) {
       setSortIsAscending(!sortIsAscending)
     } else {
@@ -93,17 +88,23 @@ export default function BookingList() {
 
   const getSortedBookings = () => {
     return bookings.sort((booking1, booking2) => {
-      if (sortBy === 'name') {
-        if (booking1.name === booking2.name) {
+      if (sortBy === 'firstName') {
+        if (booking1.firstName === booking2.firstName) {
           return 0
         } else {
-          return (booking1.name > booking2.name ? 1 : -1) * (sortIsAscending ? 1 : -1)
+          return (booking1.firstName > booking2.firstName ? 1 : -1) * (sortIsAscending ? 1 : -1)
+        }
+      } else if (sortBy === 'lastName') {
+        if (booking1.lastName === booking2.lastName) {
+          return 0
+        } else {
+          return (booking1.lastName > booking2.lastName ? 1 : -1) * (sortIsAscending ? 1 : -1)
         }
       } else if (sortBy === 'email') {
         if (booking1.email === booking2.email) {
           return 0
         } else {
-          return (booking1.name > booking2.name ? 1 : -1) * (sortIsAscending ? 1 : -1)
+          return (booking1.email > booking2.email ? 1 : -1) * (sortIsAscending ? 1 : -1)
         }
       } else if (sortBy === 'date') {
         const date1 = booking1.bookingDate.valueOf()
@@ -136,13 +137,22 @@ export default function BookingList() {
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell component="th" sortDirection={sortBy === 'name' ? (sortIsAscending ? 'asc' : 'desc') : false}>
+                  <TableCell component="th" sortDirection={sortBy === 'firstName' ? (sortIsAscending ? 'asc' : 'desc') : false}>
                     <TableSortLabel
-                      active={sortBy === 'name'}
+                      active={sortBy === 'firstName'}
                       direction={sortIsAscending ? 'asc' : 'desc'}
-                      onClick={() => handleTableHeaderClick('name')}
+                      onClick={() => handleTableHeaderClick('firstName')}
                     >
-                      Name
+                      First name
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell component="th" sortDirection={sortBy === 'lastName' ? (sortIsAscending ? 'asc' : 'desc') : false}>
+                    <TableSortLabel
+                      active={sortBy === 'lastName'}
+                      direction={sortIsAscending ? 'asc' : 'desc'}
+                      onClick={() => handleTableHeaderClick('lastName')}
+                    >
+                      Last name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell component="th" sortDirection={sortBy === 'email' ? (sortIsAscending ? 'asc' : 'desc') : false}>
@@ -201,7 +211,8 @@ const BookingRow = (props: BookingRowProps) => {
 
   return (
     <TableRow key={booking.email} className={disabled ? classes.disabledRow : ''}>
-      <TableCell className={classes.rowCell} scope="row">{booking.name}</TableCell>
+      <TableCell className={classes.rowCell} scope="row">{booking.firstName}</TableCell>
+      <TableCell className={classes.rowCell} scope="row">{booking.lastName}</TableCell>
       <TableCell className={classes.rowCell}>{booking.email}</TableCell>
       <TableCell className={classes.rowCell}>{booking.type}</TableCell>
       <TableCell className={classes.rowCell}>{booking.bookingDate.toLocaleDateString()}</TableCell>
