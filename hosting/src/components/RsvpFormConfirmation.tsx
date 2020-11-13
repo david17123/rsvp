@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
   message: {
     margin: 'auto',
+    fontSize: '20px',
     maxWidth: theme.spacing(50),
   },
   buttonsContainer: {
