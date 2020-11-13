@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
   text: {
     fontSize: '20px',
     marginTop: theme.spacing(1),
+    maxWidth: theme.spacing(40),
   },
 }))
 
@@ -63,12 +64,19 @@ export default function Rsvp() {
       </div>
       <Container maxWidth="lg" className={classes.container}>
         <img className={classes.ringImage} src={RingImage} />
-        <Box component="div" height="100vh" display="flex" flexDirection="column" justifyContent="center">
-        <img className={classes.heartImage} src={HeartImage} />
+        <Box
+          component="div"
+          height="100vh"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <img className={classes.heartImage} src={HeartImage} />
           <Typography className={classes.title} variant="h3" component="h1">Thank you.</Typography>
           <Typography className={classes.text} variant="body1">
-            You have confirmed your RSVP for&nbsp;
-            <strong>23<sup>rd</sup> of May 2020</strong>
+            You have confirmed your attendance for&nbsp;
+            <strong>Saturday 28 November 2020. See you there!</strong>
           </Typography>
         </Box>
       </Container>
