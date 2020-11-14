@@ -8,7 +8,8 @@ export interface ReadGuestRequest extends ExpressRequest {
   params: {},
   body: {
     bookingEmail: string,
-    name: string,
+    firstName: string,
+    lastName: string,
   },
 }
 
@@ -36,7 +37,8 @@ export interface EditGuestRequest extends ExpressRequest {
   params: {},
   body: {
     bookingEmail: string,
-    name: string,
+    firstName: string,
+    lastName: string,
     update: Partial<GuestUpdate>,
   },
 }
@@ -45,6 +47,7 @@ export interface DeleteGuestRequest extends ExpressRequest {
   params: {},
   body: {
     bookingEmail: string,
-    name: string,
+    firstName: string,
+    lastName: string,
   },
 }
