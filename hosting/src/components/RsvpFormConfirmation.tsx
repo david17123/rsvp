@@ -46,11 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RsvpFormConfirmation(props: RsvpFormConfirmationProps) {
   const classes = useStyles()
-  const {
-    data,
-    submit,
-    isSubmitting,
-  } = React.useContext(rsvpFormContext)
+  const { isSubmitting } = React.useContext(rsvpFormContext)
 
   return (
     <React.Fragment>
@@ -75,7 +71,7 @@ export default function RsvpFormConfirmation(props: RsvpFormConfirmationProps) {
           color="primary"
           disableElevation
           disabled={isSubmitting}
-          onClick={() => submit(data)}
+          onClick={() => props.onSubmit()}
         >
           Yes, I can attend!
         </Button>
