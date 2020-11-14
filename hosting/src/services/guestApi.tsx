@@ -37,7 +37,7 @@ export const browseAllGuests = async (idToken: string): Promise<Array<GuestApiMo
   })) as Array<GuestApiModel>
 }
 
-export const deleteGuest = async (bookingEmail: string, name: string): Promise<GuestApiModel> => {
+export const deleteGuest = async (bookingEmail: string, firstName: string, lastName: string): Promise<GuestApiModel> => {
   const response = await fetch(`${process.env.API_URL}/guest`, {
     method: 'DELETE',
     mode: 'cors',
@@ -47,7 +47,8 @@ export const deleteGuest = async (bookingEmail: string, name: string): Promise<G
     },
     body: JSON.stringify({
       bookingEmail,
-      name,
+      firstName,
+      lastName,
     }),
   })
   const responseBody = await response.json()
@@ -61,9 +62,8 @@ export const deleteGuest = async (bookingEmail: string, name: string): Promise<G
 }
 
 export interface GuestApiModel {
-  name: string,
-  dietaryRequirements?: string,
-  isChild: boolean,
+  firstName: string,
+  lastName: string,
   addedDate: Date,
   bookingEmail: string,
 }

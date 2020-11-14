@@ -8,7 +8,8 @@ export const addBooking = async (booking: BookingApiModel) => {
     },
     body: JSON.stringify({
       email: booking.email,
-      name: booking.name,
+      firstName: booking.firstName,
+      lastName: booking.lastName,
       type: booking.type,
     }),
   })
@@ -64,11 +65,12 @@ export const deleteBooking = async (idToken: string, email: string): Promise<Boo
 export interface BookingApiModel {
   email: string,
   bookingDate: Date,
-  name: string,
+  firstName: string,
+  lastName: string,
   type: BookingTypeEnum,
 }
 
 export enum BookingTypeEnum {
   INDIVIDUAL = 'individual',
-  FAMILY = 'family',
+  GROUP = 'group',
 }

@@ -123,7 +123,7 @@ export default function Rsvp(props: RouteComponentProps) {
             <IndividualBookingForm />
           </React.Fragment>
         )
-      } else if (data.booking.type === BookingTypeEnum.FAMILY) {
+      } else if (data.booking.type === BookingTypeEnum.GROUP) {
         return (
           <React.Fragment>
             {renderBackButton(RsvpFormStepsEnum.TYPE_SELECTION)}

@@ -47,7 +47,7 @@ export const browseBookings = async (req: ControllerTypes.BrowseBookingRequest, 
 
 export const addBooking = async (req: ControllerTypes.AddBookingRequest, res: Response) => {
   try {
-    const { email, name, type } = req.body
+    const { email, firstName, lastName, type } = req.body
 
     const bookingCollection = db.collection('booking')
     const existingBooking = await bookingCollection.where('email', '==', email).get()
@@ -58,7 +58,8 @@ export const addBooking = async (req: ControllerTypes.AddBookingRequest, res: Re
     // Add new booking
     const newBooking: Booking = {
       email,
-      name,
+      firstName,
+      lastName,
       type,
       bookingDate: (new Date()).toISOString(),
     }
@@ -66,7 +67,7 @@ export const addBooking = async (req: ControllerTypes.AddBookingRequest, res: Re
 
     //  Add booking email to RSVP newsletter list
     const mailer = new Mailer()
-    await mailer.createOrUpdateContact(email, name, undefined, [Mailer.RSVP_GUESTS_LIST_ID])
+    await mailer.createOrUpdateContact(email, firstName, lastName, [Mailer.RSVP_GUESTS_LIST_ID])
 
     // Send notification
     // await sendMarkdownMessage(`New RSVP booking: *${name} (${email})*`)

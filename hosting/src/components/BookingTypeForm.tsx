@@ -69,11 +69,11 @@ export default function BookingTypeForm(props: BookingTypeFormProps) {
             className={classes.familyIconButton}
             variant="outlined"
             color="primary"
-            onClick={() => props.onSelect(BookingTypeEnum.FAMILY)}
+            onClick={() => props.onSelect(BookingTypeEnum.GROUP)}
           >
             <img className={classes.familyButtonIcon} src={FamilyIcon} />
           </Button>
-          <Typography variant="body2">A family</Typography>
+          <Typography variant="body2">A group</Typography>
         </div>
       </div>
     </Box>
