@@ -46,10 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RsvpFormConfirmation(props: RsvpFormConfirmationProps) {
   const classes = useStyles()
-  const {
-    data,
-    isSubmitting,
-  } = React.useContext(rsvpFormContext)
+  const { isSubmitting } = React.useContext(rsvpFormContext)
 
   return (
     <React.Fragment>
