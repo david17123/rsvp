@@ -22,9 +22,9 @@ function useFormContextValue<T>(
   const [currentStep, setCurrentStep] = React.useState<string>(initialStep)
   const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false)
 
-  const submitFunction = async () => {
+  const submitFunction = async (formData: T) => {
     setIsSubmitting(true)
-    await handleSubmit(data)
+    await handleSubmit(formData)
     setIsSubmitting(false)
   }
 
