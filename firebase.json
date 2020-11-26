@@ -15,6 +15,14 @@
     ],
     "rewrites": [
       {
+        "source": "/live",
+        "destination": "https://zoom.us/j/82568111373?pwd=aE1nMnRBdTFLZFo2MnAyRkQ0K050Zz09"
+      },
+      {
+        "source": "/padlet",
+        "destination": "https://padlet.com/adriannewalujo/wedding"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
